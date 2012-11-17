@@ -1,7 +1,5 @@
 from functools import wraps
-import json
-
-from flask import Flask, redirect, url_for, session, request
+from flask import Flask, redirect, url_for, session, request, jsonify
 from flask_oauth import OAuth
 import json
 
@@ -33,12 +31,11 @@ google = oauth.remote_app('google',
 
 @app.route('/json/<int:presentation_id>')
 def presentation_json(presentation_id):
-    info = {'id': presentation_id,
+    return jsonify({'id': presentation_id,
             'author': 'agonzalezro@gmail.com',
             'slides': [{'text': 'slide #1'},
                        {'text': 'slide #2'}]
-           }
-    return json.dumps(info)
+           })
 
 
 @app.route('/')
