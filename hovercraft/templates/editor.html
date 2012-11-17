@@ -2,29 +2,74 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="/static/hovercraft.css" />
-
-    <script src="http://backbonejs.org/test/vendor/underscore-1.3.1.js"></script>
-    <script src="http://backbonejs.org/test/vendor/jquery-1.7.1.js"></script>
-    <script src="http://backbonejs.org/backbone.js"></script>
-    <script src="/static/editor.js"></script>
-
-    <script type="text/template" id="slide-template">
-      <%= text %>
-    </script>
-
-    <script type="text/template" id="menu-template">
-      <img src="static/menubutton.jpg"/>
-    </script>
   </head>
   <body>
     <h1>Hovercraft</h1>
 
     <div id="menu"></div>
 
-    <div id="presentation">
-      <div class="slide" id="add-slide">
-        <a href="#">Add slide</a>
+    <div id="container">
+      <div id="image-search">
+        <h3>Image Search</h3>
+        <form action="#">
+          <input type="text" placeholder="image search">
+        </form>
+        <ul></ul>
+      </div>
+
+      <div id="presentation">
+        <div class="slide" id="add-slide">
+          <a href="#">Add slide</a>
+        </div>
       </div>
     </div>
   </body>
+  <script src="http://backbonejs.org/test/vendor/underscore-1.3.1.js"></script>
+  <script src="http://backbonejs.org/test/vendor/jquery-1.7.1.js"></script>
+  <script src="http://backbonejs.org/backbone.js"></script>
+  <script src="/static/editor.js"></script>
+
+  <script type="text/template" id="slide-template">
+    <%= text %>
+  </script>
+
+  <script type="text/template" id="menu-template">
+    <img src="static/menubutton.jpg"/>
+  </script>
+  <script type="text/javascript">
+    var Image = Backbone.Model.extend();
+
+    var Images = Backbone.Collection.extend({
+        model: Image
+    });
+    var images = new Images();
+
+    var ListView = Backbone.View.extend({
+        el: $('#image-search ul'), // attaches `this.el` to an existing element.
+        initialize: function(){
+            _.bindAll(this, 'render'); // fixes loss of context for 'this' within methods
+            images.bind('change', this.render);
+            images.bind('reset', this.render);
+            images.view = this;
+            this.render(); // not all views are self-rendering. This one is.
+        },
+        template: _.template("<% _.each(images, function(img){ %> <li><img src='<%= img.thumb.url %>'></li> <% }); %>"),
+        render: function(){
+        $(this.el).html(this.template({images: images.toJSON()}));
+            return this;
+        }
+    });
+    var listView = new ListView();
+
+
+    var search_image = function(){
+        var query = $('#image-search input')[0].value;
+        if (query)
+            $.getJSON("/search/"+query, '', build_image_result);
+    };
+    var build_image_result = function(data){
+        images.reset(data);
+    };
+    $('#image-search input').keyup(_.debounce(search_image, 500));
+  </script>
 </html>

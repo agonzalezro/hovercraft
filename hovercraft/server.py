@@ -3,6 +3,7 @@ from flask import Flask, redirect, url_for, session, request, jsonify, render_te
 from flask_oauth import OAuth
 import json
 import requests
+import feedparser
 import os.path
 from hovercraft.storage import storage
 
@@ -40,6 +41,19 @@ def presentation_json(presentation_id):
             'slides': [{'text': 'slide #1'},
                        {'text': 'slide #2'}]
            })
+
+@app.route('/search/<query>')
+def image_search(query):
+    feed = feedparser.parse("http://backend.deviantart.com/rss.xml?type=deviation&q={query}".format(query=query))
+    images = []
+    for item in feed.entries:
+        try:
+            thumb = first(item.media_thumbnail)
+            image = first([x for x in item.media_content if x['medium'] == 'image'])
+            images.append({'thumb': thumb, 'image': image})
+        except AttributeError:
+            pass
+    return json.dumps(images)
 
 
 @app.route('/')
@@ -95,6 +109,13 @@ def get_access_token():
 
 def run():
     app.run()
+
+
+def first(items):
+    try:
+        return items[0]
+    except IndexError:
+        return items
 
 
 if __name__ == '__main__':

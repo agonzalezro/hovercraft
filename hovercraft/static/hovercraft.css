@@ -46,3 +46,29 @@
 #presentation p{
 	color:red;
 }
+
+#image-search {
+  float: left;
+  height: 80%;
+  width: 12%;
+  min-width: 180px;
+  overflow: scroll;
+  border: black solid 1px;
+  text-align: center;
+}
+
+#image-search input{
+  width: 60%;
+  margin: auto;
+}
+
+#image-search li{
+  list-style-type: none;
+  margin: 10px;
+  padding: 0px;
+}
+
+#image-search ul{
+  margin: 10px;
+  padding: 0px;
+}
