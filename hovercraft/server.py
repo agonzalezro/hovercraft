@@ -2,6 +2,7 @@ from functools import wraps
 from flask import Flask, redirect, url_for, session, request, jsonify, render_template
 from flask_oauth import OAuth
 import json
+import requests
 import os.path
 from hovercraft.storage import storage
 
@@ -31,17 +32,6 @@ google = oauth.remote_app('google',
                           consumer_key=GOOGLE_CLIENT_ID,
                           consumer_secret=GOOGLE_CLIENT_SECRET)
 
-def private(f):
-     @wraps(f)
-     def wrapper(*args, **kwds):
-         if 'email' in session:
-             return f(*args, **kwds)
-         else:
-             return redirect('/?redirect=' + request.url)
-     return wrapper
-
-
-
 
 @app.route('/json/<int:presentation_id>')
 def presentation_json(presentation_id):
@@ -54,30 +44,6 @@ def presentation_json(presentation_id):
 
 @app.route('/')
 def index():
-    access_token = session.get('access_token')
-    if access_token is None:
-        return redirect(url_for('login'))
-
-    access_token = access_token[0]
-    from urllib2 import Request, urlopen, URLError
-
-    headers = {'Authorization': 'OAuth '+access_token}
-    req = Request('https://www.googleapis.com/oauth2/v1/userinfo',
-                  None, headers)
-    try:
-        res = urlopen(req)
-    except URLError, e:
-        if e.code == 401:
-            # Unauthorized - bad token
-            session.pop('access_token', None)
-            return redirect(url_for('login'))
-        return res.read()
-    user_info = json.loads(res.read())
-    if user_info['verified_email']:
-        session['email'] = user_info['email']
-    redirect_url = request.args.get('redirect')
-    if redirect_url:
-        return redirect(redirect_url)
     return open(os.path.join(os.path.dirname(__file__), '..', 'editor', 'index.html')).read()
 
 @app.route('/editor.js')
@@ -85,8 +51,9 @@ def editor_js():
     return open(os.path.join(os.path.dirname(__file__), '..', 'editor', 'editor.js')).read()
 
 @app.route('/presentations')
-@private
 def presentations():
+    if 'email' not in session or 'access_token' not in session:
+        return login('presentations')
     presentations = storage.search_meta(session['email'])
     if not presentations:
         storage.set(session['email'], {'slides': 'fun', 'title': 'Some Presentation'})
@@ -96,23 +63,32 @@ def presentations():
 
 
 @app.route('/presentations/<presentation_id>')
-@private
 def presentation(presentation_id):
+    if 'email' not in session or 'access_token' not in session:
+        return login('presentation', presentation_id=presentation_id)
     return storage.get_json(presentation_id)
 
-@app.route('/login')
-def login():
-    callback=url_for('authorized', _external=True)
-    return google.authorize(callback=callback)
+def login(endpoint='', **values):
+    session['oauth_redirect'] = endpoint, values
+    return google.authorize(callback=url_for('authorized', _external=True))
 
 
 
 @app.route(REDIRECT_URI)
 @google.authorized_handler
 def authorized(resp):
-    access_token = resp['access_token']
-    session['access_token'] = access_token, ''
-    return redirect(url_for('index'))
+    url = 'https://www.googleapis.com/oauth2/v1/userinfo'
+    headers = {'Authorization': 'OAuth '+resp['access_token']}
+    r = requests.get(url, headers=headers)
+
+    if r.json.get('verified_email') != True:
+        abort(500)
+
+    session['access_token'] = resp['access_token']
+    session['email'] = r.json['email']
+    endpoint, values = session.pop('oauth_redirect', ('index', {}))
+
+    return redirect(url_for(endpoint, **values))
 
 
 @google.tokengetter
