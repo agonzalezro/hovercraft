@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name='hovercraft',
       version='0.1',
@@ -10,4 +10,6 @@ setup(name='hovercraft',
         'flask',
         'flask_oauth',
         ],
-     )
+      packages=find_packages(),
+      entry_points={'console_scripts': ['hovercraftd=hovercraft.server:run']},
+)
