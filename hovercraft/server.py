@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, redirect, url_for, session
 from flask_oauth import OAuth
 
@@ -28,6 +30,16 @@ google = oauth.remote_app('google',
                           consumer_key=GOOGLE_CLIENT_ID,
                           consumer_secret=GOOGLE_CLIENT_SECRET)
 
+@app.route('/json/<int:presentation_id>')
+def presentation_json(presentation_id):
+    info = {'id': presentation_id,
+            'author': 'agonzalezro@gmail.com',
+            'slides': [{'text': 'slide #1'},
+                       {'text': 'slide #2'}]
+           }
+    return json.dumps(info)
+
+
 @app.route('/')
 def index():
     access_token = session.get('access_token')
@@ -47,7 +59,6 @@ def index():
             # Unauthorized - bad token
             session.pop('access_token', None)
             return redirect(url_for('login'))
-        return res.read()
 
     return res.read()
 
