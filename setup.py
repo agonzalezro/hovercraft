@@ -9,6 +9,7 @@ setup(name='hovercraft',
       install_requires=[
         'flask',
         'flask_oauth',
+        'redis',
         ],
       packages=find_packages(),
       entry_points={'console_scripts': ['hovercraftd=hovercraft.server:run']},
