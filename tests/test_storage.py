@@ -1,8 +1,8 @@
 import json
 import uuid
 from hovercraft.storage import storage
-from copy import copy
-
+from copy import deepcopy
+import pytest
 
 def pytest_funcarg__email(request):
     return '{0}@example.com'.format(uuid.uuid4().hex)
@@ -26,8 +26,21 @@ def test_create(email, presentation):
 
 def test_search(email, presentation):
     pres = storage.set(email, presentation)
-    new_presentation = copy(presentation)
+    new_presentation = deepcopy(presentation)
+    del new_presentation['id']
+    new_presentation['slides'] += new_presentation['slides']
     new_pres = storage.set(email, new_presentation)
     result = storage.search(email)
-    1/0
+    presentations = map(json.loads, result)
+    assert map(json.loads, result) in ([pres, new_pres], [new_pres, pres])
     
+
+def test_modify_wrong_email(email, presentation):
+    pres = storage.set(email, presentation)
+    with pytest.raises(ValueError):
+        storage.set(email + 'a', presentation)
+
+def test_modify_wrong_id(email, presentation):
+    presentation['id'] = uuid.uuid4().hex
+    with pytest.raises(ValueError):
+        storage.set(email, presentation)

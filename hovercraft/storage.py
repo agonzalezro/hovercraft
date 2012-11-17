@@ -45,7 +45,7 @@ class Storage(object):
     def search(self, email):
         '''Return a list of all presentations of a user.'''
         keys = self._backend.smembers(user_key(email))
-        return map(self._backend.get, keys)
+        return map(self.get_json, keys)
 
     def set(self, email, presentation):
         if isinstance(presentation, basestring):
@@ -54,6 +54,8 @@ class Storage(object):
             presentation['email'] = email
         if not presentation.get('id'):
             presentation['id'] = uuid.uuid4().hex
+        elif not self.get_meta(presentation['id'], 'email'):
+            raise ValueError('The presentation does not exist')
         if email != presentation['email']:
             raise ValueError('The presentation belongs to another user.')
         pres_email = self.get_meta(presentation['id'], 'email')
