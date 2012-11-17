@@ -1,10 +1,8 @@
-from functools import wraps
-from flask import Flask, redirect, url_for, session, request, jsonify, render_template
+from flask import Flask, redirect, url_for, session, jsonify, render_template, abort
 from flask_oauth import OAuth
 import json
 import requests
 import feedparser
-import os.path
 from hovercraft.storage import storage
 
 # You must configure these 3 values from Google APIs console
