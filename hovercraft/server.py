@@ -1,6 +1,8 @@
-from flask import Flask, redirect, url_for, session
-from flask_oauth import OAuth
+from functools import wraps
 
+from flask import Flask, redirect, url_for, session, request
+from flask_oauth import OAuth
+import json
 
 # You must configure these 3 values from Google APIs console
 # https://code.google.com/apis/console
@@ -48,8 +50,13 @@ def index():
             session.pop('access_token', None)
             return redirect(url_for('login'))
         return res.read()
-
-    return res.read()
+    user_info = json.loads(res.read())
+    if user_info['verified_email']:
+        session['email'] = user_info['email']
+    redirect_url = request.args.get('redirect')
+    if redirect_url:
+        return redirect(redirect_url)
+    return json.dumps(user_info)
 
 
 @app.route('/login')
@@ -65,6 +72,23 @@ def authorized(resp):
     access_token = resp['access_token']
     session['access_token'] = access_token, ''
     return redirect(url_for('index'))
+
+
+def private(f):
+     @wraps(f)
+     def wrapper(*args, **kwds):
+         if 'email' in session:
+             return f(*args, **kwds)
+         else:
+             return redirect('/?redirect=' + request.url)
+     return wrapper
+
+@app.route('/test')
+@private
+def mytest():
+    email = session['email']
+    del session['email']
+    return "Hello, {0}!".format(email)
 
 
 @google.tokengetter
