@@ -38,15 +38,17 @@
         </h1>
       </div>
       <div>
-	<ul>
+	<table class="table">
 	  {% for pres in presentations %}
-          <li><a href="/presentations/{{ pres.id }}">{{ pres.title }}</a></li>
+	<tr>
+	  <td>
+
+          <a href="/presentations/{{ pres.id }}">{{ pres.title }}</a></li>
+</td><td><a class="btn btn-primary">Edit</a> <a class="btn btn-success" href="/presentations/{{ pres.id }}">View</a> <a class="btn btn-danger" href="#">Delete</a></td>
+	</tr>
 	  {% endfor %}
-	</ul>
+</table>
       </div>
-      <a class="btn" href="#">
-        Click Me
-      </a>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
     </script>
