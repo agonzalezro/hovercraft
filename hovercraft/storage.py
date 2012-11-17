@@ -18,7 +18,7 @@ from operator import xor
 import uuid
 import json
 
-META_FIELDS = ['email', 'title']  # Those get stored in the metadata of the presentation
+META_FIELDS = ['id', 'email', 'title']  # Those get stored in the metadata of the presentation
 
 def user_key(email):
     return ':'.join(['user', email])
@@ -37,16 +37,23 @@ class Storage(object):
         '''Returns the json of a presentation.'''
         return self._backend.get(slides_key(presentation_id))
 
-    def get_meta(self, presentation_id, field):
+    def get_meta(self, presentation_id, field=None):
+        if not field:
+            return dict((f, self.get_meta(presentation_id, f)
+                         for f in META_FIELDS))
         if field not in META_FIELDS:
             raise ValueError('Meta field {0} not allowed.'.format(field))
         return self._backend.hget(pres_key(presentation_id), field)
 
-    def search(self, email):
+    def search_json(self, email):
         '''Return a list of all presentations of a user.'''
         keys = self._backend.smembers(user_key(email))
         return map(self.get_json, keys)
 
+    def search_meta(self, email):
+        keys = self._backend.smembers(user_key(email))
+        return map(self.get_meta, keys)
+    
     def set(self, email, presentation):
         if isinstance(presentation, basestring):
             presentation = json.loads(presentation)
