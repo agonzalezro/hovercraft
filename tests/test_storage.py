@@ -32,15 +32,13 @@ def test_search(email, presentation):
     new_pres = storage.set(email, new_presentation)
     jsons = storage.search_json(email)
     presentations = map(json.loads, jsons)
-    assert map(json.loads, result) in ([pres, new_pres], [new_pres, pres])
+    assert presentations in ([pres, new_pres], [new_pres, pres])
     pres_dict = dict((p['id'], p) for p in presentations)
     metas = storage.search_meta(email)
     for meta in metas:
         pres = pres_dict[meta['id']]
         for field in META_FIELDS:
             assert pres[field] == meta[field]
-    
-
 
     
 def test_modify_wrong_email(email, presentation):

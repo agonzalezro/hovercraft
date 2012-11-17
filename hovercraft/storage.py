@@ -39,8 +39,8 @@ class Storage(object):
 
     def get_meta(self, presentation_id, field=None):
         if not field:
-            return dict((f, self.get_meta(presentation_id, f)
-                         for f in META_FIELDS))
+            return dict((f, self.get_meta(presentation_id, f))
+                         for f in META_FIELDS)
         if field not in META_FIELDS:
             raise ValueError('Meta field {0} not allowed.'.format(field))
         return self._backend.hget(pres_key(presentation_id), field)
