@@ -23,19 +23,23 @@ $(function() {
     initialize: function() {
       _.bindAll(this, "onSlidesLoaded");
       this.slides = new Slides();
+      this.slides.on("reset", this.render, this);
       this.slides.fetch({
           success: this.onSlidesLoaded,
       });
     },
     onSlidesLoaded: function(collection, response) {
-      _.each(response.slides, function(slide) {
-        console.log(slide_json.text);
-        this.slides.add({text: slide.text});
-      }, this);
-      this.render();
+      this.slides.reset(response.slides);
+      //_.each(response.slides, function(slide) {
+      //  console.log(slide.text);
+        //this.slides.add({text: slide.text});
+      //}, this);
+      //this.render();
     },
     render: function() {
+      console.log('shit');
       _.each(this.slides.models, function(slide) {
+        console.log('caca');
         var slideview = new SlideView(slide);
         $(this.el).append(slideview.render().el);
       }, this);
@@ -47,10 +51,6 @@ $(function() {
     el: "#wrapper",
     initialize: function(slides) {
       this.slidesview = new PresentationView();
-    },
-    render: function() {
-      this.slidesview.render();
-      return this;
     }
   });
 
