@@ -1,0 +1,5 @@
+<html><body><h1>List Presentations</h1>
+<ul>
+    {% for pres in presentations %}
+        <li><a href="/presentations/{{ pres.id }}">{{ pres.title }}</a></li>
+    {% endfor %}

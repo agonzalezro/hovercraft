@@ -1,8 +1,9 @@
 from functools import wraps
-from flask import Flask, redirect, url_for, session, request, jsonify
+from flask import Flask, redirect, url_for, session, request, jsonify, render_template
 from flask_oauth import OAuth
 import json
 import os.path
+from hovercraft.storage import storage
 
 # You must configure these 3 values from Google APIs console
 # https://code.google.com/apis/console
@@ -29,6 +30,18 @@ google = oauth.remote_app('google',
                           access_token_params={'grant_type': 'authorization_code'},
                           consumer_key=GOOGLE_CLIENT_ID,
                           consumer_secret=GOOGLE_CLIENT_SECRET)
+
+def private(f):
+     @wraps(f)
+     def wrapper(*args, **kwds):
+         if 'email' in session:
+             return f(*args, **kwds)
+         else:
+             return redirect('/?redirect=' + request.url)
+     return wrapper
+
+
+
 
 @app.route('/json/<int:presentation_id>')
 def presentation_json(presentation_id):
@@ -71,7 +84,21 @@ def index():
 def editor_js():
     return open(os.path.join(os.path.dirname(__file__), '..', 'editor', 'editor.js')).read()
 
+@app.route('/presentations')
+@private
+def presentations():
+    presentations = storage.search_meta(session['email'])
+    if not presentations:
+        storage.set(session['email'], {'slides': 'fun', 'title': 'Some Presentation'})
+        presentations = storage.search_meta(session['email'])
+    print presentations
+    return render_template('list_presentations.html', presentations=presentations)
 
+
+@app.route('/presentations/<presentation_id>')
+@private
+def presentation(presentation_id):
+    return storage.get_json(presentation_id)
 
 @app.route('/login')
 def login():
@@ -86,23 +113,6 @@ def authorized(resp):
     access_token = resp['access_token']
     session['access_token'] = access_token, ''
     return redirect(url_for('index'))
-
-
-def private(f):
-     @wraps(f)
-     def wrapper(*args, **kwds):
-         if 'email' in session:
-             return f(*args, **kwds)
-         else:
-             return redirect('/?redirect=' + request.url)
-     return wrapper
-
-@app.route('/test')
-@private
-def mytest():
-    email = session['email']
-    del session['email']
-    return "Hello, {0}!".format(email)
 
 
 @google.tokengetter
