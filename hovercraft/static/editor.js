@@ -43,10 +43,14 @@ $(function() {
     render: function() {
       var add_slide = $(this.el).find("#add-slide");
 
+      $(this.el).empty();
+
       _.each(this.slides.models, function(slide) {
         var slideview = new SlideView({model: slide});
-        $(slideview.render().el).insertBefore(add_slide);
+        $(this.el).append(slideview.render().el);
       }, this);
+
+      $(this.el).append(add_slide);
 
       return this;
     }
