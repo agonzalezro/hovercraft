@@ -3,7 +3,11 @@ $(function() {
 
   var Slides = Backbone.Collection.extend({
     model: Slide,
-    url: "/json/1"
+    url: "/json/1",
+    parse: function(response) {
+      this.author = response.author;
+      return response.slides;
+    }
   });
 
   var SlideView = Backbone.View.extend({
@@ -21,25 +25,12 @@ $(function() {
   var PresentationView = Backbone.View.extend({
     el: "#presentation",
     initialize: function() {
-      _.bindAll(this, "onSlidesLoaded");
       this.slides = new Slides();
       this.slides.on("reset", this.render, this);
-      this.slides.fetch({
-          success: this.onSlidesLoaded,
-      });
-    },
-    onSlidesLoaded: function(collection, response) {
-      this.slides.reset(response.slides);
-      //_.each(response.slides, function(slide) {
-      //  console.log(slide.text);
-        //this.slides.add({text: slide.text});
-      //}, this);
-      //this.render();
+      this.slides.fetch();
     },
     render: function() {
-      console.log('shit');
       _.each(this.slides.models, function(slide) {
-        console.log('caca');
         var slideview = new SlideView(slide);
         $(this.el).append(slideview.render().el);
       }, this);
