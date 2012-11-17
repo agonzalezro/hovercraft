@@ -3,19 +3,25 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="/static/hovercraft.css" />
+
     <script src="http://backbonejs.org/test/vendor/underscore-1.3.1.js"></script>
     <script src="http://backbonejs.org/test/vendor/jquery-1.7.1.js"></script>
     <script src="http://backbonejs.org/backbone.js"></script>
-    <script src="editor.js"></script>
+    <script src="/static/editor.js"></script>
+
     <script type="text/template" id="slide-template">
       <%= text %>
     </script>
+
+    <script type="text/template" id="menu-template">
+      <img src="static/menubutton.jpg"/>
+    </script>
   </head>
   <body>
-    <div id="menu">
-      <img src="static/menubutton.jpg"/>
-    </div>
     <h1>Hovercraft</h1>
+
+    <div id="menu"></div>
+
     <div id="presentation">
       <div class="slide" id="add-slide">
         <a href="#">Add slide</a>

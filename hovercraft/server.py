@@ -44,11 +44,8 @@ def presentation_json(presentation_id):
 
 @app.route('/')
 def index():
-    return open(os.path.join(os.path.dirname(__file__), '..', 'editor', 'index.html')).read()
+    return render_template('editor.html', id=1)
 
-@app.route('/editor.js')
-def editor_js():
-    return open(os.path.join(os.path.dirname(__file__), '..', 'editor', 'editor.js')).read()
 
 @app.route('/presentations')
 def presentations():

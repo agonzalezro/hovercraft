@@ -37,7 +37,8 @@ $(function() {
       this.slides.fetch();
     },
     onAddSlideButton: function() {
-      alert('Click on add');
+      this.slides.add({text: ""});
+      this.render();
     },
     render: function() {
       var add_slide = $(this.el).find("#add-slide");
@@ -51,9 +52,22 @@ $(function() {
     }
   });
 
+  var MenuView = Backbone.View.extend({
+    el: "#menu",
+    template: _.template($("#menu-template").html()),
+    initialize: function() {
+      this.render();
+    },
+    render: function() {
+      $(this.el).html(this.template());
+      return this;
+    }
+  });
+
   var AppView = Backbone.View.extend({
     el: "#wrapper",
     initialize: function() {
+      this.menuview = new MenuView();
       this.slidesview = new PresentationView();
     }
   });
