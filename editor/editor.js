@@ -2,7 +2,8 @@ $(function() {
   var Slide = Backbone.Model.extend();
 
   var Slides = Backbone.Collection.extend({
-    model: Slide
+    model: Slide,
+    url: "/json/1"
   });
 
   var SlideView = Backbone.View.extend({
@@ -19,8 +20,9 @@ $(function() {
 
   var PresentationView = Backbone.View.extend({
     el: "#presentation",
-    initialize: function(slides) {
-      this.slides = slides;
+    initialize: function() {
+      this.slides = new Slides();
+      this.slides.fetch();
     },
     render: function() {
       _.each(this.slides.models, function(slide) {
@@ -34,7 +36,7 @@ $(function() {
   var AppView = Backbone.View.extend({
     el: "#wrapper",
     initialize: function(slides) {
-      this.slidesview = new PresentationView(slides);
+      this.slidesview = new PresentationView();
     },
     render: function() {
       this.slidesview.render();
@@ -42,9 +44,9 @@ $(function() {
     }
   });
 
-  var slides = new Slides();
-  slides.add([{text: "Hello world!"}, {text: "This is the second slide"}]);
+  //var slides = new Slides();
+  //slides.add([{text: "Hello world!"}, {text: "This is the second slide"}]);
 
-  var app = new AppView(slides);
+  var app = new AppView();
   app.render();
 });
