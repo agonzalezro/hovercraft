@@ -7,15 +7,15 @@
     <script src="http://backbonejs.org/backbone.js"></script>
     <script src="editor.js"></script>
     <script type="text/template" id="slide-template">
-      <div class="slide">
-        <%= text %>
-      </div>
+      <%= text %>
     </script>
   </head>
   <body>
     <h1>Hovercraft</h1>
-    <div id="wrapper">
-      <div id="presentation"></div>
+    <div id="presentation">
+      <div class="slide" id="add-slide">
+        <a href="#">Add slide</a>
+      </div>
     </div>
   </body>
 </html>
