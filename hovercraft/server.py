@@ -2,6 +2,7 @@ from functools import wraps
 from flask import Flask, redirect, url_for, session, request, jsonify
 from flask_oauth import OAuth
 import json
+import os.path
 
 # You must configure these 3 values from Google APIs console
 # https://code.google.com/apis/console
@@ -64,7 +65,12 @@ def index():
     redirect_url = request.args.get('redirect')
     if redirect_url:
         return redirect(redirect_url)
-    return json.dumps(user_info)
+    return open(os.path.join(os.path.dirname(__file__), '..', 'editor', 'index.html')).read()
+
+@app.route('/editor.js')
+def editor_js():
+    return open(os.path.join(os.path.dirname(__file__), '..', 'editor', 'editor.js')).read()
+
 
 
 @app.route('/login')
