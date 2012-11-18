@@ -1,2 +1,19 @@
-<html><body><code>
-{{ pres }} 
+<html><head><title>{{ pres.title }}</title>
+<style>
+div.slide {
+    -webkit-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+    -khtml-background-size : 100% 100%;
+    -moz-background-size: 100% 100%;
+    background-position: center center;
+    width: 200px;
+    height: 200px;
+    clear: both;
+}
+
+</style>
+</head>
+<body>
+{% for s in pres.slides %}
+<div class="slide" style="background-image: url({{ s.image_uri }})"><h2>{{ s.text }}</h2></div>
+{% endfor %}
