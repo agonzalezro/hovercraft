@@ -76,11 +76,14 @@ $(function() {
     onKeyUp: _.debounce(function() {
       this.model.set("text", $("textarea", this.el).val());
       this.trigger("save", this);
+      $(this.el).fitText(0.5);
     }, 5),
     template: _.template($("#slide-template").html()),
     render: function() {
       $(this.el).html(this.template(this.model.toJSON()));
       $(this.el).attr("id", "slide-" + this.model.cid);
+      $(this.el).attr("contenteditable", "true");
+      $(this.el).fitText(0.5);
       return this;
     }
   });
