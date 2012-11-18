@@ -75,7 +75,6 @@ class Storage(object):
         
     
     def delete(self, email, presentation_id):
-        import ipdb ;ipdb.set_trace();
         if self.get_meta(presentation_id, 'email') != email:
             raise ValueError("The presentation belongs to someone else.")
         self._backend.srem(user_key(email), presentation_id)

@@ -38,7 +38,8 @@ def result(template, **kwargs):
     if request.accept_mimetypes.accept_html:
         return render_template(template, **kwargs)
     elif request.accept_mimetypes.accept_json:
-        return json.dumps(presentations)
+        # TODO improve this
+        return json.dumps(kwargs.items())
     else:
         abort(406)
 
@@ -73,7 +74,7 @@ def index():
 
 @app.route('/presentations')
 @auth_required
-def presentations():
+def handle_presentations():
     cleanup(session['email'])
 
     presentations = storage.search_meta(session['email'])
@@ -85,7 +86,7 @@ def presentations():
 
 @app.route('/presentations/<presentation_id>/delete', methods=['POST'])
 @auth_required
-def delete_presentation(presentation_id):
+def handle_delete_presentation(presentation_id):
     storage.delete(session['email'], presentation_id);
     return make_response('', 204)
 
