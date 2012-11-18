@@ -95,10 +95,27 @@ $(function() {
 
 
   var ImageView = Backbone.View.extend({
-    el: $('#image-search'),
-    image_list: $('#image-search ul'),
+    tagName: 'li',
+    template: _.template($('#image-search-template').html()),
     events: {
-      "keyup #image-search input": "search_image",
+      "click #image-search a": "onClick"
+    },
+    onClick: function(event){
+      event.stopPropagation();
+      event.preventDefault();
+      var image = this.model.image.url
+      $('#current-slide').css('background', 'url("' + image + '")');
+    },
+    render: function(){
+      $(this.el).html(this.template(this.model.toJSON()));
+      return this;
+    }
+  });
+
+  var ImageListView = Backbone.View.extend({
+    el: '#image-search',
+    events: {
+      "keyup input": "search_image",
       "submit #image-search form": "onSubmit"
     },
     initialize: function(){
@@ -111,9 +128,12 @@ $(function() {
       this.render();
       $('#image-search ul').css('opacity', 0);
     },
-    template: _.template($('#image-search-template').html()),
     render: function(){
-      $(this.image_list).html(this.template({images: this.images.toJSON()}));
+      $('#image-search ul').empty();
+      _.each(this.images.models, function(image) {
+        var imageview = new ImageView({model: image});
+        $('#image-search ul').append(imageview.render().el);
+      }, this);
       return this;
     },
     search_image: _.debounce(function(event){
@@ -134,7 +154,7 @@ $(function() {
       event.stopPropagation();
       event.preventDefault();
       return false;
-    }
+    },
   });
 
 
@@ -142,7 +162,7 @@ $(function() {
     initialize: function(presentation_id) {
       this.menuview = new MenuView();
       this.slidesview = new PresentationView(presentation_id);
-      this.imageview = new ImageView();
+      this.imagelistview = new ImageListView();
     }
   });
 });
