@@ -36,40 +36,10 @@
   <script type="text/template" id="menu-template">
     <img src="static/menubutton.jpg"/>
   </script>
-  <script type="text/javascript">
-    var Image = Backbone.Model.extend();
 
-    var Images = Backbone.Collection.extend({
-        model: Image
-    });
-    var images = new Images();
-
-    var ListView = Backbone.View.extend({
-        el: $('#image-search ul'), // attaches `this.el` to an existing element.
-        initialize: function(){
-            _.bindAll(this, 'render'); // fixes loss of context for 'this' within methods
-            images.bind('change', this.render);
-            images.bind('reset', this.render);
-            images.view = this;
-            this.render(); // not all views are self-rendering. This one is.
-        },
-        template: _.template("<% _.each(images, function(img){ %> <li><img src='<%= img.thumb.url %>'></li> <% }); %>"),
-        render: function(){
-        $(this.el).html(this.template({images: images.toJSON()}));
-            return this;
-        }
-    });
-    var listView = new ListView();
-
-
-    var search_image = function(){
-        var query = $('#image-search input')[0].value;
-        if (query)
-            $.getJSON("/search/"+query, '', build_image_result);
-    };
-    var build_image_result = function(data){
-        images.reset(data);
-    };
-    $('#image-search input').keyup(_.debounce(search_image, 500));
+  <script type="text/template" id="image-search-template">
+    <% _.each(images, function(img){ %>
+      <li><img src='<%= img.thumb.url %>'></li>
+    <% }); %>
   </script>
 </html>
