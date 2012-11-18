@@ -93,7 +93,7 @@ def handle_list_presentations():
     presentations = storage.search_meta(session['email'])
 
     if not presentations:
-        storage.store_slides(session['email'], get_test_presentation())
+        storage.store_presentation(session['email'], get_test_presentation())
         presentations = storage.search_meta(session['email'])
     if request.accept_mimetypes.accept_html:
         return render_template('list_presentations.html', presentations=presentations)
