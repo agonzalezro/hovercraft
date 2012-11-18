@@ -250,12 +250,12 @@ $(function() {
   });
 
   var fonts = new Fonts();
-  fonts.add([{fontname: "Strait"}, {fontname: "Faster One"}]);
+  fonts.add([{fontname: "arial"}, {fontname: "Strait"}, {fontname: "Faster One"}, 
+    {fontname: "Paprika"}, {fontname: "Share Tech"}, {fontname: "Cinzel"}]);
   fonts.forEach(function(font) {
     loadFont(font.attributes.fontname);
   });
 
-  loadFont("Strait");
 
   AppView = Backbone.View.extend({
     initialize: function(presentation_id) {
