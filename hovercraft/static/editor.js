@@ -13,7 +13,7 @@ var current_slide = function() {
   var viewport_bottom = viewport_top + viewport_height;
   for (var i = 0; i < slides.length; i++) {
     if ($(slides[i]).offset().top + (viewport_height / 3) > viewport_top)
-      return $(slides[i])
+      return $(slides[i]);
   }
 };
 
@@ -57,7 +57,11 @@ $(function() {
     }
   });
   var Images = Backbone.Collection.extend({
-    model: Image
+    model: Image,
+    initialize: function(slides){
+      this.slides = slides;
+      console.log(slides);
+    }
   });
 
 
@@ -81,26 +85,26 @@ $(function() {
     render: function() {
       $(this.el).html(this.template(this.model.toJSON()));
       $(this.el).attr("id", "slide-" + this.model.id);
+      $(this.el).data("slide-id", this.model.id);
       return this;
     }
   });
-
 
   var PresentationView = Backbone.View.extend({
     el: "#presentation",
     events: {
       "click #add-slide a": "onAddSlideButton"
     },
-    initialize: function(presentation_id) {
-      this.slides = new Slides(presentation_id);
+    initialize: function(presentation) {
+      this.slides = presentation;
       this.slides.on("reset", this.render, this);
       this.slides.fetch({
         dataType: "json",
-        url: this.slides.url()
+        url: "/presentations/" + presentation.presentation_id
       });
     },
     onAddSlideButton: function() {
-      this.slides.add({text: ""});
+      this.presentation.add({text: ""});
       this.render();
     },
     render: function() {
@@ -108,7 +112,7 @@ $(function() {
 
       $(this.el).empty();
 
-      _.each(this.slides.models, function(slide) {
+      _.each(this.slides, function(slide) {
         var slideview = new SlideView({model: slide});
         slideview.on("reset", this.render, this);
         slideview.on("save", this.slides.save, this);
@@ -135,6 +139,7 @@ $(function() {
     },
     onClick: function() {
       alert("clicked on font " + this.model.attributes.fontname);
+      this.presentation
     },
     template: _.template($("#font-template").html()),
     render: function() {
@@ -148,7 +153,7 @@ $(function() {
 
   var FontsView = Backbone.View.extend({
     el: "#fonts",
-    initialize: function(fonts) {
+    initialize: function(presentation) {
       this.fonts = fonts;
       this.render();
     },
@@ -179,10 +184,15 @@ $(function() {
     events: {
       "click": "onClick"
     },
+    initialize: function(slides){
+      this.slides = slides;
+    },
     onClick: function(event){
       event.stopPropagation();
       event.preventDefault();
       var image = this.model.attributes.image.url;
+      var slide = current_slide().id;
+
       current_slide().css('background-image', 'url("' + image + '")');
       current_slide().css('background-size', '100% 100%');
     },
@@ -198,8 +208,9 @@ $(function() {
       "keyup input": "search_image",
       "submit #image-search form": "onSubmit"
     },
-    initialize: function(){
-      this.images = new Images();
+    initialize: function(slides){
+      this.slides = slides;
+      this.images = new Images(slides);
       _.bindAll(this, 'render'); // fixes loss of context for 'this' within methods
       _.bindAll(this, 'build_image_result'); // fixes loss of context for 'this' within methods
       this.images.bind('change', this.render);
@@ -234,7 +245,7 @@ $(function() {
       event.stopPropagation();
       event.preventDefault();
       return false;
-    },
+    }
   });
 
   var fonts = new Fonts();
@@ -248,10 +259,13 @@ $(function() {
 
   AppView = Backbone.View.extend({
     initialize: function(presentation_id) {
+      var slides = new Slides(presentation_id);
+
       this.menuview = new MenuView();
-      this.slidesview = new PresentationView(presentation_id);
-      this.imagelistview = new ImageListView();
-      this.fontsview = new FontsView(fonts);
+      this.slidesview = new PresentationView(slides);
+      this.imagelistview = new ImageListView(slides);
+      this.fontsview = new FontsView(slides);
     }
   });
+
 });
