@@ -38,6 +38,7 @@ $(function() {
     initialize: function(presentation_id) {
       this.presentation_id = presentation_id;
       _.bindAll(this, "save");
+      this.on('change', this.save, this);
     },
     parse: function(response) {
       this.author = response.author;
@@ -54,6 +55,11 @@ $(function() {
           return model.toJSON();
         })),
       });
+    },
+    get_slide_by_cid: function(cid) {
+      return _.find(this.models, function(slide) {
+        return slide.cid == cid;
+      })
     }
   });
 
@@ -72,6 +78,9 @@ $(function() {
       "click .remove-slide": "onClickRemove",
       "keyup": "onKeyUp"
     },
+    initialize: function() {
+      this.model.on('change', this.render, this);
+    },
     onClickRemove: function(ev) {
       this.model.destroy();
       ev.stopPropagation();
@@ -88,7 +97,10 @@ $(function() {
       $(this.el).attr("id", "slide-" + this.model.cid);
       $(this.el).attr("slide-id", this.model.cid);
       $(this.el).attr("contenteditable", "true");
-      //$(this.el).fitText(0.5);
+      $(this.el).css('background-image', "url('" + this.model.toJSON().background + "')")
+      $(this.el).css('background-size', "100% 100%")
+      $(this.el).css('font-family', this.model.toJSON().font)
+      $(this.el).fitText();
       return this;
     }
   });
@@ -114,6 +126,7 @@ $(function() {
       var add_slide = $(this.el).find("#add-slide");
 
       $(this.el).empty();
+
       _.each(this.slides.models, function(slide) {
         var slideview = new SlideView({model: slide});
         slideview.on("reset", this.render, this);
@@ -139,8 +152,14 @@ $(function() {
     events: {
       "click": "onClick"
     },
+    initialize: function(options){
+      this.slides = options.slides;
+    },
     onClick: function() {
-      alert("clicked on font " + this.model.attributes.fontname);
+      var font = this.model.attributes.fontname;
+      var cid = current_slide().attr('slide-id');
+      var slide = this.slides.get_slide_by_cid(cid);
+      slide.set('font', font);
     },
     template: _.template($("#font-template").html()),
     render: function() {
@@ -154,13 +173,14 @@ $(function() {
 
   var FontsView = Backbone.View.extend({
     el: "#fonts",
-    initialize: function(presentation) {
+    initialize: function(slides) {
+      this.slides = slides;
       this.fonts = fonts;
       this.render();
     },
     render: function() {
       _.each(this.fonts.models, function(font) {
-        var fontview = new FontView({model: font});
+        var fontview = new FontView({model: font, slides: this.slides});
         $(this.el).append(fontview.render().el);
       }, this);
     }
@@ -185,17 +205,16 @@ $(function() {
     events: {
       "click": "onClick"
     },
-    initialize: function(slides){
-      this.slides = slides;
+    initialize: function(options){
+      this.slides = options.slides;
     },
     onClick: function(event){
       event.stopPropagation();
       event.preventDefault();
       var image = this.model.attributes.image.url;
-      var slide = current_slide().id;
-
-      current_slide().css('background-image', 'url("' + image + '")');
-      current_slide().css('background-size', '100% 100%');
+      var cid = current_slide().attr('slide-id');
+      var slide = this.slides.get_slide_by_cid(cid);
+      slide.set('background', image);
     },
     render: function(){
       $(this.el).html(this.template(this.model.toJSON()));
@@ -223,7 +242,7 @@ $(function() {
     render: function(){
       $('#image-search ul').empty();
       _.each(this.images.models, function(image) {
-        var imageview = new ImageView({model: image});
+        var imageview = new ImageView({model: image, slides: this.slides});
         $('#image-search ul').append(imageview.render().el);
       }, this);
       return this;
