@@ -48,6 +48,7 @@ body>h1 {
   height: 80%;
 
   text-align: center;
+  overflow: auto;
 }
 
 #presentation .slide{
@@ -71,7 +72,7 @@ body>h1 {
   height: 80%;
   width: 12%;
   min-width: 160px;
-  overflow: scroll;
+  overflow: auto;
   border: black solid 1px;
   text-align: center;
 }
