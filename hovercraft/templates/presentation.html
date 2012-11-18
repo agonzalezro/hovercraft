@@ -14,17 +14,13 @@
     <!-- For syntax highlighting -->
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/reveal/lib/css/zenburn.css') }}">
     <style>
-      div.slide {
-      -webkit-background-size: 100% 100%;
-      -webkit-background-size: 100% 100%;
-      -khtml-background-size : 100% 100%;
-      -moz-background-size: 100% 100%;
-      background-position: center center;
-      width: 200px;
-      height: 200px;
-      clear: both;
+      div.reveal section {
+          -o-background-size: 100% 100%;
+          -webkit-background-size: 100% 100%;
+          -khtml-background-size : 100% 100%;
+          -moz-background-size: 100% 100%;
+          background-position: center center;
       }
-
     </style>
   </head>
 
@@ -34,7 +30,7 @@
 
       <div class="slides">
 	{% for s in pres.slides %}
-	<section>{{ s.text }}</section>
+	<section class="backgrounded" style="background-image: url('{{ s.image_uri }}')">{{ s.text }}</section>
 	{% endfor %}
       </div>
     </div>
