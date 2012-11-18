@@ -14,14 +14,21 @@ $(function() {
     tagName: "div",
     className: "slide",
     events: {
-      "click": "onClick"
+      "click": "onClick",
+      "click .remove-slide": "onClickRemove"
     },
     onClick: function() {
       alert('Click on slide');
     },
+    onClickRemove: function(ev) {
+      this.model.destroy();
+      ev.stopPropagation();
+      this.trigger("reset", this);
+    },
     template: _.template($("#slide-template").html()),
     render: function() {
       $(this.el).html(this.template(this.model.toJSON()));
+      $(this.el).attr("id", "slide-" + this.model.id);
       return this;
     }
   });
@@ -47,6 +54,7 @@ $(function() {
 
       _.each(this.slides.models, function(slide) {
         var slideview = new SlideView({model: slide});
+        slideview.on("reset", this.render, this);
         $(this.el).append(slideview.render().el);
       }, this);
 

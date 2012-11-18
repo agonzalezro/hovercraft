@@ -1,4 +1,4 @@
-from flask import (Flask, redirect, url_for, session, jsonify,
+from flask import (Flask, redirect, url_for, session,
                    render_template, abort, request)
 from flask_oauth import OAuth
 import json
