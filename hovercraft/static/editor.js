@@ -74,9 +74,9 @@ $(function() {
       this.trigger("reset", this);
     },
     onKeyUp: _.debounce(function() {
-      console.log('hi');
+      this.model.set("text", $("textarea", this.el).val());
       this.trigger("save", this);
-    }, 200),
+    }, 5),
     template: _.template($("#slide-template").html()),
     render: function() {
       $(this.el).html(this.template(this.model.toJSON()));
