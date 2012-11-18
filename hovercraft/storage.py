@@ -16,7 +16,7 @@ Keys:
 import os
 import uuid
 import json
-import urlparse
+from urlparse import urlparse
 
 import redis
 
