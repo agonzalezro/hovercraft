@@ -34,15 +34,6 @@ google = oauth.remote_app('google',
                           consumer_secret=GOOGLE_CLIENT_SECRET)
 
 
-def result(data, template, **kwargs):
-    if request.accept_mimetypes.accept_html:
-        return render_template(template, **kwargs)
-    elif request.accept_mimetypes.accept_json:
-        return json.dumps(data)
-    else:
-        abort(406)
-
-
 def _is_authenticated():
     """Returns if the current session is authenticated"""
     return 'email' in session and 'access_token' in session
@@ -61,7 +52,7 @@ def auth_required(f):
 @app.route('/')
 def index():
     """Main page"""
-    return result({}, 'index.html')
+    return render_template('index.html')
 
 
 @app.route('/search/<query>')
