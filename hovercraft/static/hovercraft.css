@@ -107,3 +107,7 @@ body>h1 {
 #image-search img{
   width: 90%;
 }
+
+.fonts #font{
+  border: solid 1px;
+}

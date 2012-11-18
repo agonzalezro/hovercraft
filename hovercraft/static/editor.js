@@ -6,7 +6,29 @@ $(function() {
   });
 });
 
+var current_slide = function() {
+  var slides = $('.slide');
+  var viewport_top = $('#presentation').offset().top;
+  var viewport_height = $('#presentation').height();
+  var viewport_bottom = viewport_top + viewport_height;
+  for (var i = 0; i < slides.length; i++) {
+    if ($(slides[i]).offset().top + (viewport_height / 3) > viewport_top)
+      return $(slides[i])
+  }
+};
+
 $(function() {
+  function loadFont(fontName) {
+    var $ = document; // shortcut
+    var head  = $.getElementsByTagName('head')[0];
+    var link  = $.createElement('link');
+    link.rel  = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'http://fonts.googleapis.com/css?family=' + fontName;
+    link.media = 'all';
+    head.appendChild(link);
+  }
+
   var Slide = Backbone.Model.extend();
 
   var Image = Backbone.Model.extend();
@@ -116,7 +138,9 @@ $(function() {
     },
     template: _.template($("#font-template").html()),
     render: function() {
-      $(this.el).html(this.template(this.model.toJSON()));
+      var jqel = $(this.el);
+      jqel.html(this.template(this.model.toJSON()));
+      jqel.css('font-family', this.model.attributes.fontname)
       return this;
     }
 
@@ -159,8 +183,8 @@ $(function() {
       event.stopPropagation();
       event.preventDefault();
       var image = this.model.attributes.image.url;
-      $('#current-slide').css('background', 'url("' + image + '")');
-      alert(image);
+      current_slide().css('background-image', 'url("' + image + '")');
+      current_slide().css('background-size', '100% 100%');
     },
     render: function(){
       $(this.el).html(this.template(this.model.toJSON()));
@@ -213,12 +237,17 @@ $(function() {
     },
   });
 
+  var fonts = new Fonts();
+  fonts.add([{fontname: "Strait"}, {fontname: "Faster One"}]);
+  fonts.forEach(function(font) {
+    console.log(font);
+    loadFont(font.attributes.fontname);
+  });
+
+  loadFont("Strait");
 
   AppView = Backbone.View.extend({
     initialize: function(presentation_id) {
-      var fonts = new Fonts();
-      fonts.add([{fontname: "foo"}, {fontname: "bar"}]);
-
       this.menuview = new MenuView();
       this.slidesview = new PresentationView(presentation_id);
       this.imagelistview = new ImageListView();

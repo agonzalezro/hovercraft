@@ -50,7 +50,7 @@ font-family: 'Montserrat Alternates', sans-serif;
 
       <div class="slides">
 	{% for s in pres.slides %}
-	<section class="backgrounded" style="background-image: url('{{ s.image_uri }}')">{{ s.text }}</section>
+	<section class="backgrounded" style="background-image: url('{{ s.image_uri }}')"><p>{{ s.text }}</p></section>
 	{% endfor %}
       </div>
     </div>
@@ -64,7 +64,9 @@ font-family: 'Montserrat Alternates', sans-serif;
     <script type="text/javascript" charset="utf-8">
       (function($) {
         $(function() {
-          $('.backgrounded').fitText(0.4);
+          $('.backgrounded').each(function() {
+              $(this).fitText(0.5);
+          });
         });
       })(jQuery);
     </script>
