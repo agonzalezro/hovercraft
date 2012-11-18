@@ -12,9 +12,23 @@ $(function() {
 
   var Slides = Backbone.Collection.extend({
     model: Slide,
+    initialize: function(presentation_id) {
+      this.presentation_id = presentation_id;
+    },
     parse: function(response) {
       this.author = response.author;
       return response.slides;
+    },
+    save: function() {
+      Backbone.sync("update", Slide, {
+          contentType: 'application/json',
+          url: "/presentations/" + this.presentation_id,
+          data: JSON.stringify(_.map(this.models, function(model) {
+              return model.toJSON();
+          })),
+          success: this.onSuccess,
+          error: this.onError
+      });
     }
   });
   var Images = Backbone.Collection.extend({
@@ -26,17 +40,18 @@ $(function() {
     tagName: "div",
     className: "slide",
     events: {
-      "click": "onClick",
-      "click .remove-slide": "onClickRemove"
-    },
-    onClick: function() {
-      alert('Click on slide');
+      "click .remove-slide": "onClickRemove",
+      "keyup textarea": "onKeyUp"
     },
     onClickRemove: function(ev) {
       this.model.destroy();
       ev.stopPropagation();
       this.trigger("reset", this);
     },
+    onKeyUp: _.debounce(function() {
+      console.log('hi');
+      this.trigger("save", this);
+    }, 200),
     template: _.template($("#slide-template").html()),
     render: function() {
       $(this.el).html(this.template(this.model.toJSON()));
@@ -52,7 +67,7 @@ $(function() {
       "click #add-slide a": "onAddSlideButton"
     },
     initialize: function(presentation_id) {
-      this.slides = new Slides();
+      this.slides = new Slides(presentation_id);
       this.slides.on("reset", this.render, this);
       this.slides.fetch({
         dataType: "json",
@@ -71,6 +86,7 @@ $(function() {
       _.each(this.slides.models, function(slide) {
         var slideview = new SlideView({model: slide});
         slideview.on("reset", this.render, this);
+        slideview.on("save", this.slides.save, this);
         $(this.el).append(slideview.render().el);
       }, this);
 
