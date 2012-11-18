@@ -38,7 +38,7 @@ def result(data, template, **kwargs):
     if request.accept_mimetypes.accept_html:
         return render_template(template, **kwargs)
     elif request.accept_mimetypes.accept_json:
-        return json.dumps(data)
+        return jsonify(kwargs.get('pres'))
     else:
         abort(406)
 
