@@ -41,10 +41,11 @@ class Storage(object):
             host = parsed_url.hostname
             port = parsed_url.port
             password = parsed_url.password
-            backend = redis.StricRedis(host=host, port=port, password=password, db=0)
         else:
-            backend = redis.StrictRedis(host='localhost', port=6379, db=0)
-        self._backend = backend
+            host = 'localhost'
+            port = 6379
+            password = None
+        self._backend = redis.StrictRedis(host=host, port=port, password=password, db=0)
 
     def get_json(self, presentation_id):
         '''Returns the json of a presentation.'''
