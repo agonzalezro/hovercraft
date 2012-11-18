@@ -8,8 +8,14 @@
 
     <meta name="author" content="{{ pres.get('author') }}">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/reveal/css/main.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/reveal/css/theme/default.css') }}" id="theme">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/reveal/css/main.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/reveal/css/theme/default.css') }}" id="theme" />
+
+    {% for s in pres.slides %}
+      {% if s.font %}
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family={{ s.font }}" />
+      {% endif %}
+    {% endfor %}
 
     <!-- For syntax highlighting -->
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/reveal/lib/css/zenburn.css') }}">
@@ -53,11 +59,13 @@
       td > p { text-align: center; }
 
       {% for s in pres.slides %}
-        #slide-{{ s.id }} {
-          background-image: url('{{ s.background }}');
-        }
+      #slide-{{ s.id }} {
+        background-image: url('{{ s.background }}');
+        font-family: "{{ s.font }}";
+      }
       {% endfor %}
     </style>
+
   </head>
 
   <body>
@@ -66,7 +74,7 @@
 
       <div class="slides">
         {% for s in pres.slides %}
-        <section class="backgrounded">
+        <section class="backgrounded" id="slide-{{ s.id }}">
           <table>
             <tr>
               <td><p>{{ s.text }}</p></td>
