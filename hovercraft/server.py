@@ -1,6 +1,6 @@
 from flask import (Flask, redirect, url_for, session,
                    render_template, abort, request, jsonify,
-                   make_response)
+                   make_response, flash)
 from flask_oauth import OAuth
 import json
 import requests
@@ -53,6 +53,16 @@ def auth_required(f):
 def index():
     """Main page"""
     return render_template('index.html')
+
+
+@app.route('/logout')
+def logout():
+    """The functionality to logout"""
+    if _is_authenticated():
+        del session['email']
+        del session['access_token']
+    flash('You have been logged out')
+    return redirect(url_for('index'))
 
 
 @app.route('/search/<query>')

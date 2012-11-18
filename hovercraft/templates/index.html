@@ -7,6 +7,7 @@
         {% else %}
         <li><p class="navbar-text">Welcome, {{ session.email }}</p></li>
         <li><a href="{{ url_for('handle_presentations') }}">Presentations</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
         {% endif %}
     </ul>
 {% endblock navigation %}
