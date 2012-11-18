@@ -56,9 +56,9 @@ $(function() {
         })),
       });
     },
-    get_slide_by_cid: function(cid) {
+    get_slide_by_id: function(id) {
       return _.find(this.models, function(slide) {
-        return slide.cid == cid;
+        return slide.id == id;
       })
     }
   });
@@ -100,8 +100,8 @@ $(function() {
         $(this.el).html(content);
       }
 
-      $(this.el).attr("id", "slide-" + this.model.cid);
-      $(this.el).attr("slide-id", this.model.cid);
+      $(this.el).attr("id", "slide-" + this.model.id);
+      $(this.el).attr("slide-id", this.model.id);
       $(this.el).attr("contenteditable", "true");
       $(this.el).css('background-image', "url('" + this.model.toJSON().background + "')")
       $(this.el).css('background-size', "100% 100%")
@@ -125,7 +125,7 @@ $(function() {
       });
     },
     onAddSlideButton: function() {
-      this.slides.add({text: ""});
+      this.slides.add({id: uuid.v4(), text: ""});
       this.render();
     },
     render: function() {
@@ -163,8 +163,8 @@ $(function() {
     },
     onClick: function() {
       var font = this.model.attributes.fontname;
-      var cid = current_slide().attr('slide-id');
-      var slide = this.slides.get_slide_by_cid(cid);
+      var id = current_slide().attr('slide-id');
+      var slide = this.slides.get_slide_by_id(id);
       slide.set('font', font);
     },
     template: _.template($("#font-template").html()),
@@ -218,8 +218,8 @@ $(function() {
       event.stopPropagation();
       event.preventDefault();
       var image = this.model.attributes.image.url;
-      var cid = current_slide().attr('slide-id');
-      var slide = this.slides.get_slide_by_cid(cid);
+      var id = current_slide().attr('slide-id');
+      var slide = this.slides.get_slide_by_id(id);
       slide.set('background', image);
     },
     render: function(){
@@ -275,7 +275,7 @@ $(function() {
   });
 
   var fonts = new Fonts();
-  fonts.add([{fontname: "arial"}, {fontname: "Strait"}, {fontname: "Faster One"}, 
+  fonts.add([{fontname: "arial"}, {fontname: "Strait"}, {fontname: "Faster One"},
     {fontname: "Paprika"}, {fontname: "Share Tech"}, {fontname: "Cinzel"}]);
   fonts.forEach(function(font) {
     loadFont(font.attributes.fontname);

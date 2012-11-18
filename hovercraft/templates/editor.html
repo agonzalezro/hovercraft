@@ -30,8 +30,9 @@
 
   <script src="http://backbonejs.org/test/vendor/underscore-1.3.1.js"></script>
   <script src="http://backbonejs.org/test/vendor/jquery-1.7.1.js"></script>
-  <script src="{{url_for('static', filename='assets/js/jquery.fittext.js')}}"></script>
+  <script src="{{ url_for('static', filename='assets/js/jquery.fittext.js') }}"></script>
   <script src="http://backbonejs.org/backbone.js"></script>
+  <script src="{{ url_for('static', filename='node-uuid/uuid.js') }}"></script>
   <script src="/static/editor.js"></script>
 
   <script type="text/template" id="slide-template">
