@@ -119,7 +119,7 @@ $(function() {
       });
     },
     onAddSlideButton: function() {
-      this.presentation.add({text: ""});
+      this.slides.add({text: ""});
       this.render();
     },
     render: function() {
