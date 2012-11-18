@@ -91,7 +91,7 @@ def handle_presentations():
 
     presentations = storage.search_meta(session['email'])
 
-    if True or not presentations:
+    if not presentations:
         storage.set(session['email'], get_test_presentation())
         presentations = storage.search_meta(session['email'])
     if request.accept_mimetypes.accept_html:
