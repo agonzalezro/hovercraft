@@ -13,9 +13,12 @@ Keys:
  * slides:<presentation_id> => "json of everything"
 
 """
-
+import os
 import uuid
 import json
+import urlparse
+
+import redis
 
 META_FIELDS = ['id', 'email', 'title']  # Those get stored in the metadata of the presentation
 
@@ -28,9 +31,20 @@ def pres_key(presentation_id):
 def slides_key(presentation_id):
     return ':'.join(['slides', presentation_id])
 
-import redis
 class Storage(object):
-    _backend = redis.StrictRedis(host='localhost', port=6379, db=0)
+
+
+    def __init__(self):
+        redis_url = os.environ.get('REDISTOGO_URL')
+        if redis_url:
+            parsed_url = urlparse(redis_url)
+            host = parsed_url.hostname
+            port = parsed_url.port
+            password = parsed_url.password
+            backend = redis.StricRedis(host=host, port=port, password=password, db=0)
+        else:
+            backend = redis.StrictRedis(host='localhost', port=6379, db=0)
+        self._backend = backend
 
     def get_json(self, presentation_id):
         '''Returns the json of a presentation.'''
