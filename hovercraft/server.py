@@ -1,13 +1,16 @@
+import os
+import json
+from functools import wraps
+
 from flask import (Flask, redirect, url_for, session,
                    render_template, abort, request, jsonify,
                    make_response, flash)
 from flask_oauth import OAuth
-import json
 import requests
 import feedparser
+
 from hovercraft.storage import storage
 from tests.test_data import get_test_presentation, cleanup
-from functools import wraps
 
 GOOGLE_CLIENT_ID = '877154630036.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = 'XEHrVj74Feff2nwuNryhvLt7'
@@ -132,6 +135,7 @@ def handle_presentation(presentation_id):
     elif request.accept_mimetypes.accept_json:
         return json_response(data, encode=False)
 
+
 def login(redirect_uri=''):
     session['oauth_redirect'] = redirect_uri
     return google.authorize(callback=url_for('authorized', _external=True))
@@ -160,7 +164,8 @@ def get_access_token():
 
 
 def run():
-    app.run()
+    port = os.environ.get('PORT', 5000)
+    app.run(port=port)
 
 
 def first(items):
