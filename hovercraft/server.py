@@ -87,7 +87,7 @@ def json_response(data, status_code=200, encode=True):
 
 @app.route('/presentations')
 @auth_required
-def handle_presentations():
+def handle_list_presentations():
     cleanup(session['email'])
 
     presentations = storage.search_meta(session['email'])
@@ -119,14 +119,18 @@ def edit_presentation(presentation_id):
 @app.route('/presentations/<presentation_id>')
 @auth_required
 def handle_presentation(presentation_id):
+    if (not request.accept_mimetypes.accept_html
+        and not request.accept_mimetypes.accept_json):
+        abort(406)
+        
+    if request.method == 'POST':
+        storage.set(session['email'], request.json)
+    
     data = storage.get_json(presentation_id)
     if request.accept_mimetypes.accept_html:
         return render_template('presentation.html', pres=json.loads(data))
     elif request.accept_mimetypes.accept_json:
         return json_response(data, encode=False)
-    else:
-        abort(406)
-
 
 def login(redirect_uri=''):
     session['oauth_redirect'] = redirect_uri
