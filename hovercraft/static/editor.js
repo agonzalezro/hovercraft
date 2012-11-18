@@ -6,6 +6,17 @@ $(function() {
   });
 });
 
+var current_slide = function() {
+  var slides = $('.slide');
+  var viewport_top = $('#presentation').offset().top;
+  var viewport_height = $('#presentation').height();
+  var viewport_bottom = viewport_top + viewport_height;
+  for (var i = 0; i < slides.length; i++) {
+    if ($(slides[i]).offset().top + (viewport_height / 3) > viewport_top)
+      return $(slides[i])
+  }
+};
+
 $(function() {
   var Slide = Backbone.Model.extend();
 
@@ -141,8 +152,8 @@ $(function() {
       event.stopPropagation();
       event.preventDefault();
       var image = this.model.attributes.image.url;
-      $('#current-slide').css('background', 'url("' + image + '")');
-      alert(image);
+      current_slide().css('background-image', 'url("' + image + '")');
+      current_slide().css('background-size', '100% 100%');
     },
     render: function(){
       $(this.el).html(this.template(this.model.toJSON()));
