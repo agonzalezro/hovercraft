@@ -253,6 +253,7 @@ $(function() {
       this.images.view = this;
       this.render();
       $('#image-search ul').css('opacity', 0);
+      $.getJSON("/search", '', this.build_image_result);
     },
     render: function(){
       $('#image-search ul').empty();
@@ -265,9 +266,11 @@ $(function() {
     search_image: _.debounce(function(event){
       if (event.keyCode != 13) { // Nothing to do when enter is pressed.
         var query = $('#image-search input')[0].value;
+        $('#image-search ul').fadeTo(300, 0.4);
         if (query) {
-          $('#image-search ul').fadeTo(300, 0.4);
           $.getJSON("/search/"+query, '', this.build_image_result);
+        } else {
+          $.getJSON("/search", '', this.build_image_result);
         }
       }
     }, 800),

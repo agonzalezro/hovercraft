@@ -69,8 +69,12 @@ def logout():
 
 
 @app.route('/search/<query>')
-def image_search(query):
-    feed = feedparser.parse("http://backend.deviantart.com/rss.xml?type=deviation&q={query}".format(query=query))
+@app.route('/search')
+def image_search(query=None):
+    if query is None:
+        feed = feedparser.parse("http://backend.deviantart.com/rss.xml?type=deviation")
+    else:
+        feed = feedparser.parse("http://backend.deviantart.com/rss.xml?type=deviation&q={query}".format(query=query))
     images = []
     for item in feed.entries:
         try:
