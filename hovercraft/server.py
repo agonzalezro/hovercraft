@@ -1,5 +1,6 @@
 from flask import (Flask, redirect, url_for, session,
-                   render_template, abort, request)
+                   render_template, abort, request,
+                   make_response)
 from flask_oauth import OAuth
 import json
 import requests
@@ -80,6 +81,13 @@ def presentations():
         storage.set(session['email'], get_test_presentation())
         presentations = storage.search_meta(session['email'])
     return result('list_presentations.html', presentations=presentations)
+
+
+@app.route('/presentations/<presentation_id>/delete', methods=['POST'])
+@auth_required
+def delete_presentation(presentation_id):
+    storage.delete(session['email'], presentation_id);
+    return make_response('', 204)
 
 
 @app.route('/presentations/<presentation_id>')
