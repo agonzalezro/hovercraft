@@ -80,6 +80,7 @@ $(function() {
     },
     initialize: function() {
       this.model.on('change', this.render, this);
+      this.model.on("reset", this.render, this);
     },
     onClickRemove: function(ev) {
       this.model.destroy();
@@ -130,7 +131,10 @@ $(function() {
     },
     onAddSlideButton: function() {
       this.slides.add({id: uuid.v4(), text: ""});
-      this.render();
+      var slide = _.last(this.slides.models);
+      var slideview = new SlideView({model: slide});
+      slideview.on("save", this.slides.save, this);
+      $(_.last($('div', this.el))).before(slideview.render().el);
     },
     render: function() {
       var add_slide = $(this.el).find("#add-slide");
@@ -139,7 +143,6 @@ $(function() {
 
       _.each(this.slides.models, function(slide) {
         var slideview = new SlideView({model: slide});
-        slideview.on("reset", this.render, this);
         slideview.on("save", this.slides.save, this);
         $(this.el).append(slideview.render().el);
       }, this);
