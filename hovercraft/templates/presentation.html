@@ -39,7 +39,15 @@
 
     <script src="{{url_for('static', filename='assets/reveal/lib/js/head.min.js')}}"></script>
     <script src="{{url_for('static', filename='assets/reveal/js/reveal.min.js')}}"></script>
-
+    <script src="{{url_for('static', filename='assets/js/jquery-1.8.3.min.js')}}"></script>
+    <script src="{{url_for('static', filename='assets/js/jquery.fittext.js')}}"></script>
+    <script type="text/javascript" charset="utf-8">
+      (function($) {
+        $(function() {
+          $('.backgrounded').fitText(0.4);
+        });
+      })(jQuery);
+    </script>
     <script>
       
       // Full list of configuration options available here:
@@ -62,10 +70,7 @@
           { src: '{{url_for('static', filename='assets/reveal/plugin/speakernotes/client.js')}}', async: true, condition: function() { return window.location.host === 'localhost:1947'; } },
       ]
       });
-      
     </script>
-
-
 
 
   </body>
