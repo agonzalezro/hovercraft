@@ -87,7 +87,7 @@ $(function() {
       this.trigger("reset", this);
     },
     onKeyUp: _.debounce(function() {
-      this.model.set("text", $.trim($(".slide").html()));
+      this.model.set("text", $.trim($(this.el).html()));
       this.trigger("save", this);
       $(this.el).fitText(0.5);
     }, 5),
