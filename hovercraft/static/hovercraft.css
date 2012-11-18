@@ -66,6 +66,14 @@ body, .container.main{
   border-width: 1px;
 }
 
+#presentation #add-slide {
+  height: 30px;
+}
+
+#presentation p{
+  color:red;
+}
+
 #image-search {
   float: left;
   height: 80%;

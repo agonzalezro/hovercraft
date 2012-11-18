@@ -134,7 +134,9 @@ $(function() {
       var slide = _.last(this.slides.models);
       var slideview = new SlideView({model: slide});
       slideview.on("save", this.slides.save, this);
-      $(_.last($('div', this.el))).before(slideview.render().el);
+      var new_slide = slideview.render().el;
+      $(_.last($('div', this.el))).before(new_slide);
+      $('#presentation').animate({scrollTop: $(new_slide).offset().top - 120 + $('#presentation').scrollTop()});
     },
     render: function() {
       var add_slide = $(this.el).find("#add-slide");
