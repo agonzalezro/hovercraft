@@ -1,7 +1,7 @@
 $(function() {
   $.ajaxSetup({
     'beforeSend': function(xhr) {
-    xhr.setRequestHeader("accept", "application/json");
+      xhr.setRequestHeader("accept", "application/json");
     }
   });
 });
@@ -48,19 +48,19 @@ $(function() {
     },
     save: function() {
       Backbone.sync("update", Slide, {
-          contentType: 'application/json',
-          url: this.url(),
-          data: JSON.stringify(_.map(this.models, function(model) {
-              return model.toJSON();
-          })),
+        contentType: 'application/json',
+        url: this.url(),
+        data: JSON.stringify(_.map(this.models, function(model) {
+          return model.toJSON();
+        })),
       });
     }
   });
+
   var Images = Backbone.Collection.extend({
     model: Image,
     initialize: function(data, options){
       this.slides = options.slides;
-      console.log(this.slides);
     }
   });
 
@@ -70,7 +70,7 @@ $(function() {
     className: "slide",
     events: {
       "click .remove-slide": "onClickRemove",
-      "keyup textarea": "onKeyUp"
+      "keyup": "onKeyUp"
     },
     onClickRemove: function(ev) {
       this.model.destroy();
@@ -78,7 +78,7 @@ $(function() {
       this.trigger("reset", this);
     },
     onKeyUp: _.debounce(function() {
-      this.model.set("text", $(this.el).html());
+      this.model.set("text", $.trim($(".slide").html()));
       this.trigger("save", this);
       $(this.el).fitText(0.5);
     }, 5),
@@ -88,7 +88,7 @@ $(function() {
       $(this.el).attr("id", "slide-" + this.model.cid);
       $(this.el).attr("slide-id", this.model.cid);
       $(this.el).attr("contenteditable", "true");
-      $(this.el).fitText(0.5);
+      //$(this.el).fitText(0.5);
       return this;
     }
   });
@@ -98,12 +98,12 @@ $(function() {
     events: {
       "click #add-slide a": "onAddSlideButton"
     },
-    initialize: function(presentation) {
-      this.slides = presentation;
+    initialize: function(slides) {
+      this.slides = slides;
       this.slides.on("reset", this.render, this);
       this.slides.fetch({
         dataType: "json",
-        url: "/presentations/" + presentation.presentation_id
+        url: this.slides.url()
       });
     },
     onAddSlideButton: function() {
@@ -114,8 +114,7 @@ $(function() {
       var add_slide = $(this.el).find("#add-slide");
 
       $(this.el).empty();
-
-      _.each(this.slides, function(slide) {
+      _.each(this.slides.models, function(slide) {
         var slideview = new SlideView({model: slide});
         slideview.on("reset", this.render, this);
         slideview.on("save", this.slides.save, this);
@@ -142,7 +141,6 @@ $(function() {
     },
     onClick: function() {
       alert("clicked on font " + this.model.attributes.fontname);
-      this.presentation
     },
     template: _.template($("#font-template").html()),
     render: function() {
@@ -254,7 +252,6 @@ $(function() {
   var fonts = new Fonts();
   fonts.add([{fontname: "Strait"}, {fontname: "Faster One"}]);
   fonts.forEach(function(font) {
-    console.log(font);
     loadFont(font.attributes.fontname);
   });
 
@@ -264,11 +261,10 @@ $(function() {
     initialize: function(presentation_id) {
       var slides = new Slides(presentation_id);
 
-      this.menuview = new MenuView();
+      //this.menuview = new MenuView();
       this.slidesview = new PresentationView(slides);
       this.imagelistview = new ImageListView(slides);
       this.fontsview = new FontsView(slides);
     }
   });
-
 });
