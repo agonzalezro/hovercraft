@@ -147,7 +147,7 @@ $(function() {
     }, 800),
     build_image_result: function(data){
       $('#image-search ul').fadeTo(100, 0);
-      this.images.reset(data);
+      this.images.reset(data.images);
       $('#image-search ul').fadeTo(600, 1);
     },
     onSubmit: function(event){

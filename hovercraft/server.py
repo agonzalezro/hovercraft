@@ -75,7 +75,7 @@ def image_search(query):
             images.append({'thumb': thumb, 'image': image})
         except AttributeError:
             pass
-    return jsonify(images)
+    return jsonify({'images': images})
 
 
 def json_response(data, status_code=200, encode=True):
