@@ -102,6 +102,7 @@ $(function() {
 
       $(this.el).attr("id", "slide-" + this.model.id);
       $(this.el).attr("slide-id", this.model.id);
+      $(this.el).attr("contenteditable", "true");
 
       var background = this.model.toJSON().background;
       if (background) {
