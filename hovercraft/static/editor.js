@@ -80,7 +80,7 @@ $(function() {
     template: _.template($("#slide-template").html()),
     render: function() {
       $(this.el).html(this.template(this.model.toJSON()));
-      $(this.el).attr("id", "slide-" + this.model.id);
+      $(this.el).attr("id", "slide-" + this.model.cid);
       return this;
     }
   });
