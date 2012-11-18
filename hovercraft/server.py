@@ -37,8 +37,10 @@ google = oauth.remote_app('google',
 def presentation_json(presentation_id):
     return jsonify({'id': presentation_id,
             'author': 'agonzalezro@gmail.com',
-            'slides': [{'text': 'slide #1'},
-                       {'text': 'slide #2'}]
+            'slides': [{'id': 1,
+                        'text': 'slide #1'},
+                       {'id': 2,
+                        'text': 'slide #2'}]
            })
 
 
