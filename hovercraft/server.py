@@ -12,8 +12,8 @@ import feedparser
 from hovercraft.storage import storage
 from tests.test_data import get_test_presentation, cleanup
 
-GOOGLE_CLIENT_ID = '877154630036.apps.googleusercontent.com'
-GOOGLE_CLIENT_SECRET = 'XEHrVj74Feff2nwuNryhvLt7'
+GOOGLE_CLIENT_ID = '901545238355.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = 'pRD_lFRQol-HpByePqDdxikp'
 REDIRECT_URI = '/authorize'
 
 SECRET_KEY = 'development key'
