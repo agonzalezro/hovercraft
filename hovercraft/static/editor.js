@@ -98,7 +98,8 @@ $(function() {
     el: $('#image-search'),
     image_list: $('#image-search ul'),
     events: {
-      "keyup #image-search input": "search_image"
+      "keyup #image-search input": "search_image",
+      "submit #image-search form": "onSubmit"
     },
     initialize: function(){
       this.images = new Images();
@@ -115,16 +116,24 @@ $(function() {
       $(this.image_list).html(this.template({images: this.images.toJSON()}));
       return this;
     },
-    search_image: _.debounce(function(){
-      var query = $('#image-search input')[0].value;
-      if (query)
-        $('#image-search ul').fadeTo(300, 0.4);
-        $.getJSON("/search/"+query, '', this.build_image_result);
-    }, 500),
+    search_image: _.debounce(function(event){
+      if (event.keyCode != 13) { // Nothing to do when enter is pressed.
+        var query = $('#image-search input')[0].value;
+        if (query) {
+          $('#image-search ul').fadeTo(300, 0.4);
+          $.getJSON("/search/"+query, '', this.build_image_result);
+        }
+      }
+    }, 800),
     build_image_result: function(data){
       $('#image-search ul').fadeTo(100, 0);
       this.images.reset(data);
       $('#image-search ul').fadeTo(600, 1);
+    },
+    onSubmit: function(event){
+      event.stopPropagation();
+      event.preventDefault();
+      return false;
     }
   });
 
