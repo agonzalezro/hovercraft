@@ -34,15 +34,6 @@ google = oauth.remote_app('google',
                           consumer_secret=GOOGLE_CLIENT_SECRET)
 
 
-def result(data, template, **kwargs):
-    if request.accept_mimetypes.accept_html:
-        return render_template(template, **kwargs)
-    elif request.accept_mimetypes.accept_json:
-        return jsonify(kwargs.get('pres'))
-    else:
-        abort(406)
-
-
 def auth_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
@@ -72,6 +63,11 @@ def image_search(query):
     return jsonify(images)
 
 
+def json_response(data, status_code=200, encode=True):
+    if encode:
+        data = json.dumps(data)
+    return make_response(data, status_code, mimetypes='application/json')
+
 @app.route('/presentations')
 @auth_required
 def handle_presentations():
@@ -81,7 +77,12 @@ def handle_presentations():
     if not presentations:
         storage.set(session['email'], get_test_presentation())
         presentations = storage.search_meta(session['email'])
-    return result(presentations, 'list_presentations.html', presentations=presentations)
+    if request.accept_mimetypes.accept_html:
+        return render_template('list_presentations.html', presentations=presentations)
+    elif request.accept_mimetypes.accept_json:
+        return json_response(presentations)
+    else:
+        abort(406)
 
 
 @app.route('/presentations/<presentation_id>/delete', methods=['POST'])
@@ -101,7 +102,12 @@ def edit_presentation(presentation_id):
 @auth_required
 def presentation(presentation_id):
     data = storage.get_json(presentation_id)
-    return result(data, 'presentation.html', pres=json.loads(data))
+    if request.accept_mimetypes.accept_html:
+        return render_template('list_presentations.html', presentations=json.loads(data))
+    elif request.accept_mimetypes.accept_json:
+        return json_response(data, encode=False)
+    else:
+        abort(406)
 
 
 def login(redirect_uri=''):
