@@ -93,7 +93,13 @@ $(function() {
     }, 5),
     template: _.template($("#slide-template").html()),
     render: function() {
-      $(this.el).html(this.template(this.model.toJSON()));
+      if (this.loaded !== true) {
+        this.loaded = true;
+
+        var content = this.template(this.model.toJSON());
+        $(this.el).html(content);
+      }
+
       $(this.el).attr("id", "slide-" + this.model.cid);
       $(this.el).attr("slide-id", this.model.cid);
       $(this.el).attr("contenteditable", "true");
