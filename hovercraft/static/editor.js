@@ -103,7 +103,11 @@ $(function() {
       $(this.el).attr("id", "slide-" + this.model.cid);
       $(this.el).attr("slide-id", this.model.cid);
       $(this.el).attr("contenteditable", "true");
-      $(this.el).css('background-image', "url('" + this.model.toJSON().background + "')")
+
+      var background = this.model.toJSON().background;
+      if (background) {
+          $(this.el).css('background-image', "url('" + background + "')");
+      }
       $(this.el).css('background-size', "100% 100%")
       $(this.el).css('font-family', this.model.toJSON().font)
       $(this.el).fitText();
