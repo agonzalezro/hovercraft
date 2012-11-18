@@ -165,7 +165,7 @@ def get_access_token():
 
 def run():
     port = os.environ.get('PORT', 5000)
-    app.run(port=port)
+    app.run(port=int(port))
 
 
 def first(items):
