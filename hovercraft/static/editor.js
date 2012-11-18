@@ -58,9 +58,9 @@ $(function() {
   });
   var Images = Backbone.Collection.extend({
     model: Image,
-    initialize: function(slides){
-      this.slides = slides;
-      console.log(slides);
+    initialize: function(data, options){
+      this.slides = options.slides;
+      console.log(this.slides);
     }
   });
 
@@ -213,7 +213,7 @@ $(function() {
     },
     initialize: function(slides){
       this.slides = slides;
-      this.images = new Images(slides);
+      this.images = new Images([], {slides: slides});
       _.bindAll(this, 'render'); // fixes loss of context for 'this' within methods
       _.bindAll(this, 'build_image_result'); // fixes loss of context for 'this' within methods
       this.images.bind('change', this.render);
