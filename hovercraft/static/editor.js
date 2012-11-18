@@ -275,10 +275,12 @@ $(function() {
   });
 
   var fonts = new Fonts();
-  fonts.add([{fontname: "arial"}, {fontname: "Strait"}, {fontname: "Faster One"}, 
-    {fontname: "Paprika"}, {fontname: "Share Tech"}, {fontname: "Cinzel"}]);
+  fonts.add([{fontname: "arial"}, {fontname: "Strait", webfont: true}, {fontname: "Faster One", webfont: true}, 
+    {fontname: "Paprika", webfont: true}, {fontname: "Share Tech", webfont: true}, {fontname: "Cinzel", webfont: true}]);
   fonts.forEach(function(font) {
-    loadFont(font.attributes.fontname);
+    if (font.attributes.webfont) {
+      loadFont(font.attributes.fontname);
+    }
   });
 
 
