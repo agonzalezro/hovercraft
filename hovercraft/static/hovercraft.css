@@ -77,6 +77,17 @@ body>h1 {
   text-align: center;
 }
 
+#fonts {
+  float: right;
+  height: 80%;
+  width: 12%;
+  min-width: 180px;
+  border: black solid 1px;
+  text-align: center;
+}
+
+
+
 #image-search input{
   width: 80%;
   margin: auto;

@@ -8,6 +8,7 @@ $(function() {
 
 $(function() {
   var Slide = Backbone.Model.extend();
+
   var Image = Backbone.Model.extend();
 
   var Slides = Backbone.Collection.extend({
@@ -80,6 +81,42 @@ $(function() {
     }
   });
 
+  var Font = Backbone.Model.extend(); 
+
+  var Fonts = Backbone.Collection.extend({
+    model: Font,
+  });
+  
+  var FontView = Backbone.View.extend({
+    tagName: "p",
+    className: "font",
+    events: {
+      "click": "onClick"
+    },
+    onClick: function() {
+      alert('Click on font');
+    },
+    template: _.template($("#font-template").html()),
+    render: function() {
+      $(this.el).html(this.template(this.model.toJSON()));
+      return this;
+    }
+
+  });
+
+  var FontsView = Backbone.View.extend({
+    el: "#fonts",
+    initialize: function(fonts) {
+      this.fonts = fonts;
+      this.render();
+    },
+    render: function() {
+      _.each(this.fonts.models, function(font) {
+        var fontview = new FontView({model: font});
+        $(this.el).append(fontview.render().el);
+      }, this);
+    }
+  });
 
   var MenuView = Backbone.View.extend({
     el: "#menu",
@@ -160,9 +197,13 @@ $(function() {
 
   AppView = Backbone.View.extend({
     initialize: function(presentation_id) {
+      var fonts = new Fonts();
+      fonts.add([{fontname: "foo"}, {fontname: "bar"}]);
+
       this.menuview = new MenuView();
       this.slidesview = new PresentationView(presentation_id);
       this.imagelistview = new ImageListView();
+      this.fontsview = new FontsView(fonts);
     }
   });
 });
