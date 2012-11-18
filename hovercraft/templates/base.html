@@ -51,5 +51,10 @@
         {% endblock container %}
     </div>
     {% endblock body %}
+
+    <script src="{{url_for('static', filename='assets/js/jquery-1.8.3.min.js')}}"></script>
+    <script src="{{url_for('static', filename='assets/js/bootstrap.min.js')}}"></script>
+    {% block body_script %}
+    {% endblock body_script %}
 </body>
 </html>
