@@ -16,7 +16,7 @@ def pytest_funcarg__presentation(request):
 
 
 def test_create(email, presentation):
-    pres = storage.set(email, presentation)
+    pres = storage.store_presentation(email, presentation)
     assert pres['email'] == email
     assert pres['id']
     assert storage.get_meta(pres['id'], 'title') == pres['title']
@@ -25,11 +25,11 @@ def test_create(email, presentation):
 
 
 def test_search(email, presentation):
-    pres = storage.set(email, presentation)
+    pres = storage.store_presentation(email, presentation)
     new_presentation = deepcopy(presentation)
     del new_presentation['id']
     new_presentation['slides'] += new_presentation['slides']
-    new_pres = storage.set(email, new_presentation)
+    new_pres = storage.store_presentation(email, new_presentation)
     jsons = storage.search_json(email)
     presentations = map(json.loads, jsons)
     assert presentations in ([pres, new_pres], [new_pres, pres])
@@ -42,11 +42,11 @@ def test_search(email, presentation):
 
     
 def test_modify_wrong_email(email, presentation):
-    pres = storage.set(email, presentation)
+    storage.store_presentation(email, presentation)
     with pytest.raises(ValueError):
-        storage.set(email + 'a', presentation)
+        storage.store_presentation(email + 'a', presentation)
 
 def test_modify_wrong_id(email, presentation):
     presentation['id'] = uuid.uuid4().hex
     with pytest.raises(ValueError):
-        storage.set(email, presentation)
+        storage.store_presentation(email, presentation)

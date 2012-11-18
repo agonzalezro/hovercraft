@@ -53,7 +53,7 @@ class Storage(object):
         keys = self._backend.smembers(user_key(email))
         return map(self.get_meta, keys)
 
-    def set(self, email, presentation):
+    def store_presentation(self, email, presentation):
         if isinstance(presentation, basestring):
             presentation = json.loads(presentation)
         if not presentation.get('email'):
@@ -73,6 +73,12 @@ class Storage(object):
             self._backend.hset(pres_key(presentation['id' ]), field, presentation.get(field))
         return presentation
 
+    def store_slides(self, presentation_id, email, slides):
+        if email != self.get_meta(presentation_id, 'email'):
+            raise ValueError("The presentation belongs to someone else")
+        pres = json.loads(self.get_json(presentation_id))
+        pres[slides] = slides
+        self.store_presentation(email, pres)
 
     def delete(self, email, presentation_id):
         if self.get_meta(presentation_id, 'email') != email:

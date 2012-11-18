@@ -93,7 +93,7 @@ def handle_list_presentations():
     presentations = storage.search_meta(session['email'])
 
     if not presentations:
-        storage.set(session['email'], get_test_presentation())
+        storage.store_slides(session['email'], get_test_presentation())
         presentations = storage.search_meta(session['email'])
     if request.accept_mimetypes.accept_html:
         return render_template('list_presentations.html', presentations=presentations)
@@ -124,7 +124,7 @@ def handle_presentation(presentation_id):
         abort(406)
 
     if request.method in ['POST', 'PUT']:
-        storage.set(session['email'], request.json)
+        storage.store_slides(presentation_id, session['email'], request.json)
 
     data = storage.get_json(presentation_id)
     if request.accept_mimetypes.accept_html:
