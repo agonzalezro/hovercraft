@@ -66,7 +66,7 @@ def image_search(query):
 def json_response(data, status_code=200, encode=True):
     if encode:
         data = json.dumps(data)
-    return make_response(data, status_code, mimetypes='application/json')
+    return make_response(data, status_code, {'Content-Type': 'application/json'})
 
 @app.route('/presentations')
 @auth_required
@@ -74,6 +74,7 @@ def handle_presentations():
     cleanup(session['email'])
 
     presentations = storage.search_meta(session['email'])
+
     if not presentations:
         storage.set(session['email'], get_test_presentation())
         presentations = storage.search_meta(session['email'])
