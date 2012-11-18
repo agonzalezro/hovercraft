@@ -135,13 +135,14 @@ $(function() {
     tagName: 'li',
     template: _.template($('#image-search-template').html()),
     events: {
-      "click #image-search a": "onClick"
+      "click": "onClick"
     },
     onClick: function(event){
       event.stopPropagation();
       event.preventDefault();
-      var image = this.model.image.url
+      var image = this.model.attributes.image.url;
       $('#current-slide').css('background', 'url("' + image + '")');
+      alert(image);
     },
     render: function(){
       $(this.el).html(this.template(this.model.toJSON()));
