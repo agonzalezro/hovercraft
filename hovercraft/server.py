@@ -116,14 +116,14 @@ def edit_presentation(presentation_id):
     return render_template('editor.html', presentation_id=presentation_id)
 
 
-@app.route('/presentations/<presentation_id>')
+@app.route('/presentations/<presentation_id>', methods=['GET', 'POST', 'PUT'])
 @auth_required
 def handle_presentation(presentation_id):
     if (not request.accept_mimetypes.accept_html
         and not request.accept_mimetypes.accept_json):
         abort(406)
         
-    if request.method == 'POST':
+    if request.method in ['POST', 'PUT']:
         storage.set(session['email'], request.json)
     
     data = storage.get_json(presentation_id)
