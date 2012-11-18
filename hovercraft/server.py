@@ -8,8 +8,6 @@ from hovercraft.storage import storage
 from tests.test_data import get_test_presentation, cleanup
 from functools import wraps
 
-# You must configure these 3 values from Google APIs console
-# https://code.google.com/apis/console
 GOOGLE_CLIENT_ID = '877154630036.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = 'XEHrVj74Feff2nwuNryhvLt7'
 REDIRECT_URI = '/authorize'
