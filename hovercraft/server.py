@@ -44,13 +44,19 @@ def result(data, template, **kwargs):
 
 
 def auth_required(f):
-     @wraps(f)
-     def wrapper(*args, **kwargs):
-         if 'email' not in session or 'access_token' not in session:
-             return login(request.url)
-         else:
-             return f(*args, **kwargs)
-     return wrapper
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if 'email' not in session or 'access_token' not in session:
+            return login(request.url)
+        else:
+            return f(*args, **kwargs)
+    return wrapper
+
+
+@app.route('/')
+def index():
+    return 'Nothing here'
+
 
 @app.route('/search/<query>')
 def image_search(query):
@@ -81,8 +87,9 @@ def handle_presentations():
 @app.route('/presentations/<presentation_id>/delete', methods=['POST'])
 @auth_required
 def handle_delete_presentation(presentation_id):
-    storage.delete(session['email'], presentation_id);
+    storage.delete(session['email'], presentation_id)
     return make_response('', 204)
+
 
 @app.route('/presentations/<presentation_id>/edit')
 @auth_required
@@ -97,8 +104,8 @@ def presentation(presentation_id):
     return result(data, 'presentation.html', pres=json.loads(data))
 
 
-def login(redirect_uri='', **values):
-    session['oauth_redirect'] = redirect_uri, values
+def login(redirect_uri=''):
+    session['oauth_redirect'] = redirect_uri
     return google.authorize(callback=url_for('authorized', _external=True))
 
 
@@ -114,9 +121,9 @@ def authorized(resp):
 
     session['access_token'] = resp['access_token']
     session['email'] = r.json['email']
-    endpoint, values = session.pop('oauth_redirect', ('index', {}))
+    uri = session.pop('oauth_redirect', url_for('index'))
 
-    return redirect(url_for(endpoint, **values))
+    return redirect(uri)
 
 
 @google.tokengetter
