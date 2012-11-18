@@ -4,7 +4,7 @@ from uuid import uuid4
 from hovercraft.storage import storage
 
 def get_test_presentation():
-    return {'author': 'agonzalezro@gmail.com',
+    return {'author': 'Some Guy',
             'title': 'Presentation ' + uuid4().hex,
             'slides': [{'id': uuid4().hex,
                         'text': 'slide #1',

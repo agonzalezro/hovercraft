@@ -44,7 +44,7 @@
 	  <td>
 
           <a href="/presentations/{{ pres.id }}">{{ pres.title }}</a></li>
-        </td><td><a href="/presentations/{{ pres.id }}/edit" class="btn btn-primary">Edit</a> <a class="btn btn-success" href="/presentations/{{ pres.id }}">View</a> <a class="btn btn-danger" href="#">Delete</a></td>
+</td><td><a class="btn btn-primary" href="/presentations/{{ pres.id }}/edit">Edit</a> <a class="btn btn-danger delete-button" href="/presentations/{{ pres.id }}/delete" rel="Delete {{ pres.title }}" onclick="return false">Delete</a></td>
 	</tr>
 	  {% endfor %}
 </table>
@@ -53,6 +53,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
     </script>
     <script src="{{url_for('static', filename='assets/js/bootstrap.js')}}">
+    </script>
+    <script src="{{url_for('static', filename='assets/js/bootbox.min.js')}}">
+    </script>
+    <script src="{{url_for('static', filename='assets/js/jquery-1.8.3.min.js')}}">
+    </script>
+    <script src="{{url_for('static', filename='list_presentations.js')}}">
     </script>
   </body>
 
