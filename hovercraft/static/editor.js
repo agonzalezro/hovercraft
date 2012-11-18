@@ -15,20 +15,22 @@ $(function() {
     model: Slide,
     initialize: function(presentation_id) {
       this.presentation_id = presentation_id;
+      _.bindAll(this, "save");
     },
     parse: function(response) {
       this.author = response.author;
-      return response.slides;
+      return response.slides
+    },
+    url: function() {
+      return "/presentations/" + this.presentation_id
     },
     save: function() {
       Backbone.sync("update", Slide, {
           contentType: 'application/json',
-          url: "/presentations/" + this.presentation_id,
+          url: this.url(),
           data: JSON.stringify(_.map(this.models, function(model) {
               return model.toJSON();
           })),
-          success: this.onSuccess,
-          error: this.onError
       });
     }
   });
@@ -72,7 +74,7 @@ $(function() {
       this.slides.on("reset", this.render, this);
       this.slides.fetch({
         dataType: "json",
-        url: "/presentations/" + presentation_id
+        url: this.slides.url()
       });
     },
     onAddSlideButton: function() {
@@ -97,12 +99,12 @@ $(function() {
     }
   });
 
-  var Font = Backbone.Model.extend(); 
+  var Font = Backbone.Model.extend();
 
   var Fonts = Backbone.Collection.extend({
     model: Font,
   });
-  
+
   var FontView = Backbone.View.extend({
     tagName: "p",
     className: "font",

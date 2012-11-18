@@ -52,7 +52,7 @@ class Storage(object):
     def search_meta(self, email):
         keys = self._backend.smembers(user_key(email))
         return map(self.get_meta, keys)
-    
+
     def set(self, email, presentation):
         if isinstance(presentation, basestring):
             presentation = json.loads(presentation)
@@ -72,13 +72,13 @@ class Storage(object):
         for field in META_FIELDS:
             self._backend.hset(pres_key(presentation['id' ]), field, presentation.get(field))
         return presentation
-        
-    
+
+
     def delete(self, email, presentation_id):
         if self.get_meta(presentation_id, 'email') != email:
             raise ValueError("The presentation belongs to someone else.")
         self._backend.srem(user_key(email), presentation_id)
         self._backend.delete(slides_key(presentation_id))
         self._backend.delete(pres_key(presentation_id))
-    
+
 storage = Storage()
