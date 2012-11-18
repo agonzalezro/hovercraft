@@ -88,21 +88,23 @@ $(function() {
       this.images.bind('reset', this.render);
       this.images.view = this;
       this.render();
+      $('#image-search ul').css('opacity', 0);
     },
     template: _.template($('#image-search-template').html()),
     render: function(){
       $(this.image_list).html(this.template({images: this.images.toJSON()}));
-      $('#image-search ul').transparancy = '40%';
       return this;
     },
     search_image: _.debounce(function(){
       var query = $('#image-search input')[0].value;
       if (query)
-        $('#image-search ul').transparancy = '40%';
-        $.getJSON("/search/"+query, '', _.debounce(this.build_image_result, 500));
-    }),
+        $('#image-search ul').fadeTo(300, 0.4);
+        $.getJSON("/search/"+query, '', this.build_image_result);
+    }, 500),
     build_image_result: function(data){
+      $('#image-search ul').fadeTo(100, 0);
       this.images.reset(data);
+      $('#image-search ul').fadeTo(600, 1);
     }
   });
 
