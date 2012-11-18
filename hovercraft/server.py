@@ -14,7 +14,7 @@ from tests.test_data import get_test_presentation, cleanup
 
 GOOGLE_CLIENT_ID = '901545238355.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = 'pRD_lFRQol-HpByePqDdxikp'
-REDIRECT_URI = '/authorize'
+REDIRECT_URI = '/oauth2callback'
 
 SECRET_KEY = 'development key'
 DEBUG = True
