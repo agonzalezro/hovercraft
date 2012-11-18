@@ -1,4 +1,5 @@
-from flask import Flask, redirect, url_for, session, jsonify, render_template, abort
+from flask import (Flask, redirect, url_for, session, jsonify,
+                   render_template, abort)
 from flask_oauth import OAuth
 import json
 import requests
@@ -9,7 +10,7 @@ from hovercraft.storage import storage
 # https://code.google.com/apis/console
 GOOGLE_CLIENT_ID = '877154630036.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = 'XEHrVj74Feff2nwuNryhvLt7'
-REDIRECT_URI = '/authorize'  # one of the Redirect URIs from Google APIs console
+REDIRECT_URI = '/authorize'
 
 SECRET_KEY = 'development key'
 DEBUG = True
@@ -35,10 +36,11 @@ google = oauth.remote_app('google',
 @app.route('/json/<int:presentation_id>')
 def presentation_json(presentation_id):
     return jsonify({'id': presentation_id,
-            'author': 'agonzalezro@gmail.com',
-            'slides': [{'text': 'slide #1'},
-                       {'text': 'slide #2'}]
-           })
+                    'author': 'agonzalezro@gmail.com',
+                    'slides': [{'text': 'slide #1'},
+                               {'text': 'slide #2'}]
+                    })
+
 
 @app.route('/search/<query>')
 def image_search(query):
@@ -77,20 +79,20 @@ def presentation(presentation_id):
         return login('presentation', presentation_id=presentation_id)
     return storage.get_json(presentation_id)
 
+
 def login(endpoint='', **values):
     session['oauth_redirect'] = endpoint, values
     return google.authorize(callback=url_for('authorized', _external=True))
-
 
 
 @app.route(REDIRECT_URI)
 @google.authorized_handler
 def authorized(resp):
     url = 'https://www.googleapis.com/oauth2/v1/userinfo'
-    headers = {'Authorization': 'OAuth '+resp['access_token']}
+    headers = {'Authorization': 'OAuth ' + resp['access_token']}
     r = requests.get(url, headers=headers)
 
-    if r.json.get('verified_email') != True:
+    if not r.json.get('verified_email'):
         abort(500)
 
     session['access_token'] = resp['access_token']
