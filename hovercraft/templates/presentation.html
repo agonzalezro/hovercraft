@@ -13,15 +13,33 @@
 
     <!-- For syntax highlighting -->
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/reveal/lib/css/zenburn.css') }}">
+<link href='http://fonts.googleapis.com/css?family=Montserrat+Alternates:400,700' rel='stylesheet' type='text/css'>
     <style>
       div.reveal section {
           -o-background-size: 100% 100%;
           -webkit-background-size: 100% 100%;
           -khtml-background-size : 100% 100%;
           -moz-background-size: 100% 100%;
-text-shadow: 0 0 0.2em #000, 0 0 0.2em #000, 0 0 0.2em #000;
+  /* WebKit (Safari/Chrome) Only */
+  -webkit-text-stroke: 1px black;
+  
+  /* If we weren't using text-shadow, we'd set a fallback color
+     and use this to set color instead
+    -webkit-text-fill-color: white; */
+  
+  color: white;
+  
+  text-shadow:
+    3px 3px 0 #000,
+    /* Simulated effect for Firefox and Opera
+       and nice enhancement for WebKit */
+   -1px -1px 0 #000,  
+    1px -1px 0 #000,
+   -1px  1px 0 #000,
+    1px  1px 0 #000;
 
-text-family: impact;
+font-family: 'Montserrat Alternates', sans-serif;
+
       }
     </style>
   </head>
