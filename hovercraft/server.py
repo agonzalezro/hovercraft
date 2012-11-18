@@ -100,10 +100,10 @@ def edit_presentation(presentation_id):
 
 @app.route('/presentations/<presentation_id>')
 @auth_required
-def presentation(presentation_id):
+def handle_presentation(presentation_id):
     data = storage.get_json(presentation_id)
     if request.accept_mimetypes.accept_html:
-        return render_template('list_presentations.html', presentations=json.loads(data))
+        return render_template('presentation.html', pres=json.loads(data))
     elif request.accept_mimetypes.accept_json:
         return json_response(data, encode=False)
     else:
