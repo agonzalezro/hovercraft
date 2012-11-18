@@ -94,7 +94,7 @@ $(function() {
       "click": "onClick"
     },
     onClick: function() {
-      alert('Click on font');
+      alert("clicked on font " + this.model.attributes.fontname);
     },
     template: _.template($("#font-template").html()),
     render: function() {
