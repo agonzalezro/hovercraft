@@ -36,7 +36,8 @@
   <script src="/static/editor.js"></script>
 
   <script type="text/template" id="slide-template">
-    <%= text %>
+    <p contenteditable="true"><%= text %></p>
+    <a href="#" class="remove-slide">Remove slide</a>
   </script>
 
   <script type="text/template" id="menu-template">

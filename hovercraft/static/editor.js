@@ -89,7 +89,7 @@ $(function() {
     onKeyUp: _.debounce(function() {
       this.model.set("text", $.trim($(this.el).html()));
       this.trigger("save", this);
-      $(this.el).fitText(0.5);
+      $("p", this.el).fitText(0.5);
     }, 5),
     template: _.template($("#slide-template").html()),
     render: function() {
@@ -102,7 +102,6 @@ $(function() {
 
       $(this.el).attr("id", "slide-" + this.model.id);
       $(this.el).attr("slide-id", this.model.id);
-      $(this.el).attr("contenteditable", "true");
 
       var background = this.model.toJSON().background;
       if (background) {
@@ -110,7 +109,7 @@ $(function() {
       }
       $(this.el).css('background-size', "100% 100%")
       $(this.el).css('font-family', this.model.toJSON().font)
-      $(this.el).fitText();
+      $("p", this.el).fitText();
       return this;
     }
   });
