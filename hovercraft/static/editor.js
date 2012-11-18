@@ -78,7 +78,7 @@ $(function() {
       this.trigger("reset", this);
     },
     onKeyUp: _.debounce(function() {
-      this.model.set("text", $("textarea", this.el).val());
+      this.model.set("text", $(this.el).html());
       this.trigger("save", this);
       $(this.el).fitText(0.5);
     }, 5),
