@@ -1,5 +1,5 @@
 from flask import (Flask, redirect, url_for, session,
-                   render_template, abort, request)
+                   render_template, abort, request, jsonify)
 from flask_oauth import OAuth
 import json
 import requests
@@ -41,7 +41,7 @@ def result(template, **kwargs):
         return json.dumps(presentations)
     else:
         abort(406)
- 
+
 
 @app.route('/search/<query>')
 def image_search(query):
@@ -54,12 +54,7 @@ def image_search(query):
             images.append({'thumb': thumb, 'image': image})
         except AttributeError:
             pass
-    return json.dumps(images)
-
-
-@app.route('/')
-def index():
-    return render_template('editor.html', id=1)
+    return jsonify(images)
 
 
 @app.route('/presentations')
@@ -73,6 +68,13 @@ def presentations():
         storage.set(session['email'], get_test_presentation())
         presentations = storage.search_meta(session['email'])
     return result('list_presentations.html', presentations=presentations)
+
+
+@app.route('/presentations/<presentation_id>/edit')
+def edit_presentation(presentation_id):
+    if 'email' not in session or 'access_token' not in session:
+        return login('presentation', presentation_id=presentation_id)
+    return result('editor.html', presentation_id=presentation_id)
 
 
 @app.route('/presentations/<presentation_id>')

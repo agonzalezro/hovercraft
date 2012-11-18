@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  
+
   <head>
     <meta charset="utf-8">
     <title>
@@ -29,7 +29,7 @@
     <style>
     </style>
   </head>
-  
+
   <body>
     <div class="container">
       <div class="page-header">
@@ -44,7 +44,7 @@
 	  <td>
 
           <a href="/presentations/{{ pres.id }}">{{ pres.title }}</a></li>
-</td><td><a class="btn btn-primary">Edit</a> <a class="btn btn-success" href="/presentations/{{ pres.id }}">View</a> <a class="btn btn-danger" href="#">Delete</a></td>
+        </td><td><a href="/presentations/{{ pres.id }}/edit" class="btn btn-primary">Edit</a> <a class="btn btn-success" href="/presentations/{{ pres.id }}">View</a> <a class="btn btn-danger" href="#">Delete</a></td>
 	</tr>
 	  {% endfor %}
 </table>
