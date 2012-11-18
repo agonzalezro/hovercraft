@@ -14,7 +14,6 @@ Keys:
 
 """
 
-from operator import xor
 import uuid
 import json
 
@@ -75,7 +74,11 @@ class Storage(object):
         return presentation
         
     
-    def delete(self, key):
-        return self._backend.delete(key)
+    def delete(self, email, presentation_id):
+        if self.get_meta(presentation_id, 'email') != email:
+            raise ValueError("The presentation belongs to someone else.")
+        self._backend.srem(user_key(email), presentation_id)
+        self._backend.delete(slides_key(presentation_id))
+        self._backend.delete(pres_key(presentation_id))
     
 storage = Storage()

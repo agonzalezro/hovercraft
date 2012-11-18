@@ -1,4 +1,7 @@
+import json
 from uuid import uuid4
+
+from hovercraft.storage import storage
 
 def get_test_presentation():
     return {'author': 'agonzalezro@gmail.com',
@@ -11,3 +14,12 @@ def get_test_presentation():
                         'image_uri': 'http://i.imgur.com/pNSls.jpg'}
                        ]
             }
+
+def cleanup(email):
+    """Delete all the shitty presentations."""
+    for j in storage.search_json(email):
+        p = json.loads(j)
+        if ('author' not in p or 'title' not in p or 'slides' not in p
+            or not p['slides'] or not isinstance(p['slides'], list)):
+            storage.delete(email, p['id'])
+    

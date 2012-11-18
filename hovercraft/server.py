@@ -1,11 +1,11 @@
 from flask import (Flask, redirect, url_for, session, jsonify,
-                   render_template, abort)
+                   render_template, abort, request)
 from flask_oauth import OAuth
 import json
 import requests
 import feedparser
 from hovercraft.storage import storage
-from tests.test_data import get_test_presentation
+from tests.test_data import get_test_presentation, cleanup
 
 # You must configure these 3 values from Google APIs console
 # https://code.google.com/apis/console
@@ -34,6 +34,15 @@ google = oauth.remote_app('google',
                           consumer_secret=GOOGLE_CLIENT_SECRET)
 
 
+def result(template, **kwargs):
+    if request.accept_mimetypes.accept_html:
+        return render_template(template, **kwargs)
+    elif request.accept_mimetypes.accept_json:
+        return json.dumps(presentations)
+    else:
+        abort(406)
+ 
+
 @app.route('/search/<query>')
 def image_search(query):
     feed = feedparser.parse("http://backend.deviantart.com/rss.xml?type=deviation&q={query}".format(query=query))
@@ -57,19 +66,21 @@ def index():
 def presentations():
     if 'email' not in session or 'access_token' not in session:
         return login('presentations')
+    cleanup(session['email'])
+
     presentations = storage.search_meta(session['email'])
-    if True or not presentations:
+    if not presentations:
         storage.set(session['email'], get_test_presentation())
         presentations = storage.search_meta(session['email'])
-    print presentations
-    return render_template('list_presentations.html', presentations=presentations)
+    return result('list_presentations.html', presentations=presentations)
 
 
 @app.route('/presentations/<presentation_id>')
 def presentation(presentation_id):
     if 'email' not in session or 'access_token' not in session:
         return login('presentation', presentation_id=presentation_id)
-    return storage.get_json(presentation_id)
+    data = storage.get_json(presentation_id)
+    return result('presentation.html', pres=json.loads(data))
 
 
 def login(endpoint='', **values):
