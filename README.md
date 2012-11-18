@@ -5,7 +5,7 @@ Slides generator with backend to add CRUD functionality to your slides.
 
 You can see a better description on the URL of the hackathon (yes, that was made in a weekend!): http://paylogic.github.com/winter-hackathon/ (the project name there is "Slides Generator").
 
-Here you can find a really crappy `pow(alpha, 2)`: http://nameless-spire-1402.herokuapp.com/
+Here you can find a really crappy `pow(alpha, 2)`: http://nameless-spire-1402.herokuapp.com/.
 
 
 TODO
@@ -23,7 +23,7 @@ TODO
     * ...
 * Get a domain
 * Perhaps allows the users to render with != JS sliders: impressjs, reveal, FullscreenSlitSlider...
-* **All what you want!** <small>*Disclaimer: If you provide the proper pull request*</small>
+* **All what you want!** *Disclaimer: If you provide the proper pull request*.
 
 
 Collaborators
@@ -31,12 +31,12 @@ Collaborators
 
 Thanks all for the good job and the funny time!
 
-* [grimborg] (http://github.com/grimborg)
-* [hvdklauw] (http://github.com/hvdklauw)
-* [tarmack] (http://github.com/tarmack)
-* [thedjinn] (http://github.com/thedjinn)
-* [Luit] (http://github.com/Luit)
-* [jjalonso] (http://github.com/jjalonso)
-* [wolktm] (http://github.com/wolktm)
-* [kevindeboer] (http://github.com/kevindeboer)
-* [agonzalezro] (http://github.com/agonzalezro)
+* [grimborg](http://github.com/grimborg)
+* [hvdklauw](http://github.com/hvdklauw)
+* [tarmack](http://github.com/tarmack)
+* [thedjinn](http://github.com/thedjinn)
+* [Luit](http://github.com/Luit)
+* [jjalonso](http://github.com/jjalonso)
+* [wolktm](http://github.com/wolktm)
+* [kevindeboer](http://github.com/kevindeboer)
+* [agonzalezro](http://github.com/agonzalezro)
