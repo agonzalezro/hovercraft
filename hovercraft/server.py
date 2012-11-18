@@ -5,6 +5,7 @@ import json
 import requests
 import feedparser
 from hovercraft.storage import storage
+from tests.test_data import get_test_presentation
 
 # You must configure these 3 values from Google APIs console
 # https://code.google.com/apis/console
@@ -33,15 +34,6 @@ google = oauth.remote_app('google',
                           consumer_secret=GOOGLE_CLIENT_SECRET)
 
 
-@app.route('/json/<int:presentation_id>')
-def presentation_json(presentation_id):
-    return jsonify({'id': presentation_id,
-                    'author': 'agonzalezro@gmail.com',
-                    'slides': [{'text': 'slide #1'},
-                               {'text': 'slide #2'}]
-                    })
-
-
 @app.route('/search/<query>')
 def image_search(query):
     feed = feedparser.parse("http://backend.deviantart.com/rss.xml?type=deviation&q={query}".format(query=query))
@@ -66,8 +58,8 @@ def presentations():
     if 'email' not in session or 'access_token' not in session:
         return login('presentations')
     presentations = storage.search_meta(session['email'])
-    if not presentations:
-        storage.set(session['email'], {'slides': 'fun', 'title': 'Some Presentation'})
+    if True or not presentations:
+        storage.set(session['email'], get_test_presentation())
         presentations = storage.search_meta(session['email'])
     print presentations
     return render_template('list_presentations.html', presentations=presentations)
