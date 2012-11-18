@@ -77,7 +77,7 @@ class Storage(object):
         if email != self.get_meta(presentation_id, 'email'):
             raise ValueError("The presentation belongs to someone else")
         pres = json.loads(self.get_json(presentation_id))
-        pres[slides] = slides
+        pres['slides'] = slides
         self.store_presentation(email, pres)
 
     def delete(self, email, presentation_id):
