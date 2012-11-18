@@ -42,10 +42,10 @@ $(function() {
     },
     parse: function(response) {
       this.author = response.author;
-      return response.slides
+      return response.slides;
     },
     url: function() {
-      return "/presentations/" + this.presentation_id
+      return "/presentations/" + this.presentation_id;
     },
     save: function() {
       Backbone.sync("update", Slide, {
