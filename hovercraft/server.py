@@ -1,6 +1,6 @@
 from flask import (Flask, redirect, url_for, session,
                    render_template, abort, request, jsonify,
-                   make_response)
+                   make_response, flash)
 from flask_oauth import OAuth
 import json
 import requests
@@ -34,28 +34,35 @@ google = oauth.remote_app('google',
                           consumer_secret=GOOGLE_CLIENT_SECRET)
 
 
-def result(data, template, **kwargs):
-    if request.accept_mimetypes.accept_html:
-        return render_template(template, **kwargs)
-    elif request.accept_mimetypes.accept_json:
-        return jsonify(kwargs.get('pres'))
-    else:
-        abort(406)
+def _is_authenticated():
+    """Returns if the current session is authenticated"""
+    return 'email' in session and 'access_token' in session
 
 
 def auth_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        if 'email' not in session or 'access_token' not in session:
-            return login(request.url)
-        else:
+        if _is_authenticated():
             return f(*args, **kwargs)
+        else:
+            return login(request.url)
     return wrapper
 
 
 @app.route('/')
 def index():
-    return 'Nothing here'
+    """Main page"""
+    return render_template('index.html')
+
+
+@app.route('/logout')
+def logout():
+    """The functionality to logout"""
+    if _is_authenticated():
+        del session['email']
+        del session['access_token']
+    flash('You have been logged out')
+    return redirect(url_for('index'))
 
 
 @app.route('/search/<query>')
@@ -69,19 +76,31 @@ def image_search(query):
             images.append({'thumb': thumb, 'image': image})
         except AttributeError:
             pass
-    return jsonify(images)
+    return jsonify({'images': images})
+
+
+def json_response(data, status_code=200, encode=True):
+    if encode:
+        data = json.dumps(data)
+    return make_response(data, status_code, {'Content-Type': 'application/json'})
 
 
 @app.route('/presentations')
 @auth_required
-def handle_presentations():
+def handle_list_presentations():
     cleanup(session['email'])
 
     presentations = storage.search_meta(session['email'])
+
     if not presentations:
         storage.set(session['email'], get_test_presentation())
         presentations = storage.search_meta(session['email'])
-    return result(presentations, 'list_presentations.html', presentations=presentations)
+    if request.accept_mimetypes.accept_html:
+        return render_template('list_presentations.html', presentations=presentations)
+    elif request.accept_mimetypes.accept_json:
+        return json_response(presentations)
+    else:
+        abort(406)
 
 
 @app.route('/presentations/<presentation_id>/delete', methods=['POST'])
@@ -97,12 +116,21 @@ def edit_presentation(presentation_id):
     return render_template('editor.html', presentation_id=presentation_id)
 
 
-@app.route('/presentations/<presentation_id>')
+@app.route('/presentations/<presentation_id>', methods=['GET', 'POST', 'PUT'])
 @auth_required
-def presentation(presentation_id):
+def handle_presentation(presentation_id):
+    if (not request.accept_mimetypes.accept_html
+        and not request.accept_mimetypes.accept_json):
+        abort(406)
+        
+    if request.method in ['POST', 'PUT']:
+        storage.set(session['email'], request.json)
+    
     data = storage.get_json(presentation_id)
-    return result(data, 'presentation.html', pres=json.loads(data))
-
+    if request.accept_mimetypes.accept_html:
+        return render_template('presentation.html', pres=json.loads(data))
+    elif request.accept_mimetypes.accept_json:
+        return json_response(data, encode=False)
 
 def login(redirect_uri=''):
     session['oauth_redirect'] = redirect_uri

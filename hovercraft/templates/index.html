@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block navigation %}
+    <ul class="nav pull-right">
+        {% if 'email' not in session or 'access_token' not in session %}
+        <li><a href="{{ url_for('handle_presentations') }}">Login</a></li>
+        {% else %}
+        <li><p class="navbar-text">Welcome, {{ session.email }}</p></li>
+        <li><a href="{{ url_for('handle_presentations') }}">Presentations</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% endif %}
+    </ul>
+{% endblock navigation %}
+
+
+{% block container %}
+    Slides on the fly
+{% endblock container %}

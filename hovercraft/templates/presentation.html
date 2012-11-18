@@ -1,19 +1,98 @@
-<html><head><title>{{ pres.title }}</title>
-<style>
-div.slide {
-    -webkit-background-size: 100% 100%;
-    -webkit-background-size: 100% 100%;
-    -khtml-background-size : 100% 100%;
-    -moz-background-size: 100% 100%;
-    background-position: center center;
-    width: 200px;
-    height: 200px;
-    clear: both;
-}
+<!doctype html>
+<html lang="en">
 
-</style>
-</head>
-<body>
-{% for s in pres.slides %}
-<div class="slide" style="background-image: url({{ s.image_uri }})"><h2>{{ s.text }}</h2></div>
-{% endfor %}
+  <head>
+    <meta charset="utf-8">
+
+    <title>{{ pres.title }}</title>
+
+    <meta name="author" content="{{ pres.get('author') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/reveal/css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/reveal/css/theme/default.css') }}" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/reveal/lib/css/zenburn.css') }}">
+<link href='http://fonts.googleapis.com/css?family=Montserrat+Alternates:400,700' rel='stylesheet' type='text/css'>
+    <style>
+      div.reveal section {
+          -o-background-size: 100% 100%;
+          -webkit-background-size: 100% 100%;
+          -khtml-background-size : 100% 100%;
+          -moz-background-size: 100% 100%;
+  /* WebKit (Safari/Chrome) Only */
+  -webkit-text-stroke: 1px black;
+  
+  /* If we weren't using text-shadow, we'd set a fallback color
+     and use this to set color instead
+    -webkit-text-fill-color: white; */
+  
+  color: white;
+  
+  text-shadow:
+    3px 3px 0 #000,
+    /* Simulated effect for Firefox and Opera
+       and nice enhancement for WebKit */
+   -1px -1px 0 #000,  
+    1px -1px 0 #000,
+   -1px  1px 0 #000,
+    1px  1px 0 #000;
+
+font-family: 'Montserrat Alternates', sans-serif;
+
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <div class="slides">
+	{% for s in pres.slides %}
+	<section class="backgrounded" style="background-image: url('{{ s.image_uri }}')">{{ s.text }}</section>
+	{% endfor %}
+      </div>
+    </div>
+
+
+
+    <script src="{{url_for('static', filename='assets/reveal/lib/js/head.min.js')}}"></script>
+    <script src="{{url_for('static', filename='assets/reveal/js/reveal.min.js')}}"></script>
+    <script src="{{url_for('static', filename='assets/js/jquery-1.8.3.min.js')}}"></script>
+    <script src="{{url_for('static', filename='assets/js/jquery.fittext.js')}}"></script>
+    <script type="text/javascript" charset="utf-8">
+      (function($) {
+        $(function() {
+          $('.backgrounded').fitText(0.4);
+        });
+      })(jQuery);
+    </script>
+    <script>
+      
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+          controls: false,
+          progress: false,
+          history: false,
+       
+          theme: Reveal.getQueryHash().theme || 'default', // available themes are in /css/theme
+          transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/linear(2d)
+
+      // Optional libraries used to extend on reveal.js
+      dependencies: [
+          { src: '{{url_for('static', filename='assets/reveal/lib/js/highlight.js')}}', async: true, callback: function() { window.hljs.initHighlightingOnLoad(); } },
+          { src: '{{url_for('static', filename='assets/reveal/lib/js/classList.js')}}', condition: function() { return !document.body.classList; } },
+          { src: '{{url_for('static', filename='assets/reveal/lib/js/showdown.js')}}', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '{{url_for('static', filename='assets/reveal/lib/js/data-markdown.js')}}', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '{{url_for('static', filename='assets/reveal/socket.io/socket.io.js')}}', async: true, condition: function() { return window.location.host === 'localhost:1947'; } },
+          { src: '{{url_for('static', filename='assets/reveal/plugin/speakernotes/client.js')}}', async: true, condition: function() { return window.location.host === 'localhost:1947'; } },
+      ]
+      });
+    </script>
+
+
+  </body>
+</html>
+

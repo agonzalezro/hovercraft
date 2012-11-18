@@ -9,6 +9,7 @@
     <div id="menu"></div>
 
     <div id="container">
+
       <div id="image-search">
         <h3>Image Search</h3>
         <form action="#">
@@ -16,6 +17,8 @@
         </form>
         <ul></ul>
       </div>
+
+      <div id="fonts"></div>
 
       <div id="presentation">
         <div class="slide" id="add-slide">
@@ -39,9 +42,7 @@
   </script>
 
   <script type="text/template" id="image-search-template">
-    <% _.each(images, function(img){ %>
-      <li><img src='<%= img.thumb.url %>'></li>
-    <% }); %>
+      <img src='<%= thumb.url %>'>
   </script>
 
   <script>
@@ -49,5 +50,9 @@
       var app = new AppView("{{ presentation_id }}");
       app.render();
     });
+  </script>
+
+  <script type="text/template" id="font-template">
+    <%= fontname %>
   </script>
 </html>
