@@ -1,5 +1,5 @@
 from flask import (Flask, redirect, url_for, session,
-                   render_template, abort, request,
+                   render_template, abort, request, jsonify,
                    make_response)
 from flask_oauth import OAuth
 import json
@@ -64,12 +64,7 @@ def image_search(query):
             images.append({'thumb': thumb, 'image': image})
         except AttributeError:
             pass
-    return json.dumps(images)
-
-
-@app.route('/')
-def index():
-    return render_template('editor.html', id=1)
+    return jsonify(images)
 
 
 @app.route('/presentations')
@@ -89,6 +84,11 @@ def handle_presentations():
 def handle_delete_presentation(presentation_id):
     storage.delete(session['email'], presentation_id);
     return make_response('', 204)
+
+@app.route('/presentations/<presentation_id>/edit')
+@auth_required
+def edit_presentation(presentation_id):
+    return result('editor.html', presentation_id=presentation_id)
 
 
 @app.route('/presentations/<presentation_id>')

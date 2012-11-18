@@ -1,14 +1,26 @@
 $(function() {
+  $.ajaxSetup({
+    'beforeSend': function(xhr) {
+    xhr.setRequestHeader("accept", "application/json");
+    }
+  });
+});
+
+$(function() {
   var Slide = Backbone.Model.extend();
+  var Image = Backbone.Model.extend();
 
   var Slides = Backbone.Collection.extend({
     model: Slide,
-    url: "/json/1",
     parse: function(response) {
       this.author = response.author;
       return response.slides;
     }
   });
+  var Images = Backbone.Collection.extend({
+    model: Image
+  });
+
 
   var SlideView = Backbone.View.extend({
     tagName: "div",
@@ -33,15 +45,19 @@ $(function() {
     }
   });
 
+
   var PresentationView = Backbone.View.extend({
     el: "#presentation",
     events: {
       "click #add-slide a": "onAddSlideButton"
     },
-    initialize: function() {
+    initialize: function(presentation_id) {
       this.slides = new Slides();
       this.slides.on("reset", this.render, this);
-      this.slides.fetch();
+      this.slides.fetch({
+        dataType: "json",
+        url: "/presentations/" + presentation_id
+      });
     },
     onAddSlideButton: function() {
       this.slides.add({text: ""});
@@ -64,6 +80,7 @@ $(function() {
     }
   });
 
+
   var MenuView = Backbone.View.extend({
     el: "#menu",
     template: _.template($("#menu-template").html()),
@@ -76,11 +93,6 @@ $(function() {
     }
   });
 
-  var Image = Backbone.Model.extend();
-
-  var Images = Backbone.Collection.extend({
-    model: Image
-  });
 
   var ImageView = Backbone.View.extend({
     el: $('#image-search'),
@@ -117,17 +129,11 @@ $(function() {
   });
 
 
-  var AppView = Backbone.View.extend({
-    el: "#wrapper",
-    initialize: function() {
+  AppView = Backbone.View.extend({
+    initialize: function(presentation_id) {
       this.menuview = new MenuView();
-      this.slidesview = new PresentationView();
+      this.slidesview = new PresentationView(presentation_id);
       this.imageview = new ImageView();
     }
   });
-
-  var app = new AppView();
-  app.render();
-
-
 });
