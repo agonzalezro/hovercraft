@@ -122,10 +122,10 @@ def handle_presentation(presentation_id):
     if (not request.accept_mimetypes.accept_html
         and not request.accept_mimetypes.accept_json):
         abort(406)
-        
+
     if request.method in ['POST', 'PUT']:
         storage.set(session['email'], request.json)
-    
+
     data = storage.get_json(presentation_id)
     if request.accept_mimetypes.accept_html:
         return render_template('presentation.html', pres=json.loads(data))
