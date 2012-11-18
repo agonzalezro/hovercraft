@@ -6,6 +6,7 @@ import requests
 import feedparser
 from hovercraft.storage import storage
 from tests.test_data import get_test_presentation, cleanup
+from functools import wraps
 
 # You must configure these 3 values from Google APIs console
 # https://code.google.com/apis/console
@@ -41,7 +42,16 @@ def result(template, **kwargs):
         return json.dumps(presentations)
     else:
         abort(406)
- 
+
+
+def auth_required(f):
+     @wraps(f)
+     def wrapper(*args, **kwargs):
+         if 'email' not in session or 'access_token' not in session:
+             return login(request.url)
+         else:
+             return f(*args, **kwargs)
+     return wrapper
 
 @app.route('/search/<query>')
 def image_search(query):
@@ -63,9 +73,8 @@ def index():
 
 
 @app.route('/presentations')
+@auth_required
 def presentations():
-    if 'email' not in session or 'access_token' not in session:
-        return login('presentations')
     cleanup(session['email'])
 
     presentations = storage.search_meta(session['email'])
@@ -76,15 +85,14 @@ def presentations():
 
 
 @app.route('/presentations/<presentation_id>')
+@auth_required
 def presentation(presentation_id):
-    if 'email' not in session or 'access_token' not in session:
-        return login('presentation', presentation_id=presentation_id)
     data = storage.get_json(presentation_id)
     return result('presentation.html', pres=json.loads(data))
 
 
-def login(endpoint='', **values):
-    session['oauth_redirect'] = endpoint, values
+def login(redirect_uri='', **values):
+    session['oauth_redirect'] = redirect_uri, values
     return google.authorize(callback=url_for('authorized', _external=True))
 
 
