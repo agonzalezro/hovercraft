@@ -8,6 +8,16 @@ You can see a better description on the URL of the hackathon (yes, that was made
 Here you can find a really crappy `pow(alpha, 2)`: http://nameless-spire-1402.herokuapp.com/.
 
 
+Run it!
+-------
+
+    $ sudo apt-get install redis-server
+    $ mkvirtualenv hovercraft
+    $ workon hovercraft
+    $ python setup.py develop
+    $ pytthon hovercraft/server.py
+
+
 TODO
 ----
 
