@@ -15,7 +15,7 @@ Run it!
     $ mkvirtualenv hovercraft
     $ workon hovercraft
     $ python setup.py develop
-    $ pytthon hovercraft/server.py
+    $ python hovercraft/server.py
 
 
 TODO
